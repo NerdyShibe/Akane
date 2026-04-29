@@ -1,0 +1,52 @@
+module Akane
+  module Gameboy
+    class Cpu
+      class Registers
+        attr_reader a: Integer
+        attr_reader f: Integer
+        attr_reader b: Integer
+        attr_reader c: Integer
+        attr_reader d: Integer
+        attr_reader e: Integer
+        attr_reader h: Integer
+        attr_reader l: Integer
+
+        attr_reader sp: Integer
+        attr_reader pc: Integer
+
+        def initialize: (?bool skip_boot_rom) -> void
+
+        def a=: (Integer value) -> Integer
+        def f=: (Integer value) -> Integer
+        def b=: (Integer value) -> Integer
+        def c=: (Integer value) -> Integer
+        def d=: (Integer value) -> Integer
+        def e=: (Integer value) -> Integer
+        def h=: (Integer value) -> Integer
+        def l=: (Integer value) -> Integer
+
+        def af=: (Integer value) -> Integer
+        def bc=: (Integer value) -> Integer
+        def de=: (Integer value) -> Integer
+        def hl=: (Integer value) -> Integer
+        def sp=: (Integer value) -> Integer
+        def pc=: (Integer value) -> Integer
+
+        def af: () -> Integer
+        def bc: () -> Integer
+        def de: () -> Integer
+        def hl: () -> Integer
+
+        def z_flag: () -> Integer
+        def n_flag: () -> Integer
+        def h_flag: () -> Integer
+        def c_flag: () -> Integer
+
+        def z_flag=: (Integer bit) -> Integer
+        def n_flag=: (Integer bit) -> Integer
+        def h_flag=: (Integer bit) -> Integer
+        def c_flag=: (Integer bit) -> Integer
+      end
+    end
+  end
+end
