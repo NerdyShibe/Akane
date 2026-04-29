@@ -14,7 +14,7 @@ module Akane
         attr_reader sp: Integer
         attr_reader pc: Integer
 
-        def initialize: (?bool skip_boot_rom) -> void
+        def initialize: (?skip_boot_rom: bool) -> void
 
         def a=: (Integer value) -> Integer
         def f=: (Integer value) -> Integer
