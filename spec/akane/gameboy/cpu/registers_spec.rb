@@ -4,7 +4,7 @@ describe Akane::Gameboy::Cpu::Registers do
   subject(:registers) { described_class.new(skip_boot_rom: true) }
 
   describe 'initialize' do
-    it 'has all values cleared if boot rom is not skipped', :aggregate_failures do
+    it 'clears all register values if boot rom is not skipped', :aggregate_failures do
       registers = described_class.new(skip_boot_rom: false)
 
       expect(registers.a).to eq(0x00)
@@ -40,7 +40,7 @@ describe Akane::Gameboy::Cpu::Registers do
       expect(registers.a).to eq(0x99)
     end
 
-    it 'alwayses wrap the value around 0xFF' do
+    it 'wraps all values around 0xFF' do
       registers.a = 0xFF + 1
 
       expect(registers.a).to eq(0x00)
@@ -48,7 +48,7 @@ describe Akane::Gameboy::Cpu::Registers do
   end
 
   describe '#f=' do
-    it 'alwayses ignore the lower nibble' do
+    it 'ignores the lower nibble from the F register' do
       registers.f = 0b11111111
 
       expect(registers.f).to eq(0b11110000)
@@ -62,7 +62,7 @@ describe Akane::Gameboy::Cpu::Registers do
       expect(registers.b).to eq(0x99)
     end
 
-    it 'alwayses wrap the value around 0xFF' do
+    it 'wraps all values around 0xFF' do
       registers.b = 0xFF + 1
 
       expect(registers.b).to eq(0x00)
@@ -76,7 +76,7 @@ describe Akane::Gameboy::Cpu::Registers do
       expect(registers.c).to eq(0x99)
     end
 
-    it 'alwayses wrap the value around 0xFF' do
+    it 'wraps all values around 0xFF' do
       registers.c = 0xFF + 1
 
       expect(registers.c).to eq(0x00)
@@ -90,7 +90,7 @@ describe Akane::Gameboy::Cpu::Registers do
       expect(registers.d).to eq(0x99)
     end
 
-    it 'alwayses wrap the value around 0xFF' do
+    it 'wraps all values around 0xFF' do
       registers.d = 0xFF + 1
 
       expect(registers.d).to eq(0x00)
@@ -104,7 +104,7 @@ describe Akane::Gameboy::Cpu::Registers do
       expect(registers.e).to eq(0x99)
     end
 
-    it 'alwayses wrap the value around 0xFF' do
+    it 'wraps all values around 0xFF' do
       registers.e = 0xFF + 1
 
       expect(registers.e).to eq(0x00)
@@ -118,7 +118,7 @@ describe Akane::Gameboy::Cpu::Registers do
       expect(registers.h).to eq(0x99)
     end
 
-    it 'alwayses wrap the value around 0xFF' do
+    it 'wraps all values around 0xFF' do
       registers.h = 0xFF + 1
 
       expect(registers.h).to eq(0x00)
@@ -132,7 +132,7 @@ describe Akane::Gameboy::Cpu::Registers do
       expect(registers.l).to eq(0x99)
     end
 
-    it 'alwayses wrap the value around 0xFF' do
+    it 'wraps all values around 0xFF' do
       registers.l = 0xFF + 1
 
       expect(registers.l).to eq(0x00)
@@ -147,7 +147,7 @@ describe Akane::Gameboy::Cpu::Registers do
       expect(registers.f).to eq(0x70)
     end
 
-    it 'alwayses wrap the value around 0xFFFF', :aggregate_failures do
+    it 'wraps the value around 0xFFFF', :aggregate_failures do
       registers.af = 0xFFFF + 0x0999
 
       expect(registers.a).to eq(0x09)
@@ -163,7 +163,7 @@ describe Akane::Gameboy::Cpu::Registers do
       expect(registers.c).to eq(0x34)
     end
 
-    it 'alwayses wrap the value around 0xFFFF', :aggregate_failures do
+    it 'wraps the value around 0xFFFF', :aggregate_failures do
       registers.bc = 0xFFFF + 0xFFF1
 
       expect(registers.b).to eq(0xFF)
@@ -179,7 +179,7 @@ describe Akane::Gameboy::Cpu::Registers do
       expect(registers.e).to eq(0x78)
     end
 
-    it 'alwayses wrap the value around 0xFFFF', :aggregate_failures do
+    it 'wraps the value around 0xFFFF', :aggregate_failures do
       registers.de = 0xFFFF + 0xFFF1
 
       expect(registers.d).to eq(0xFF)
@@ -195,7 +195,7 @@ describe Akane::Gameboy::Cpu::Registers do
       expect(registers.l).to eq(0x23)
     end
 
-    it 'alwayses wrap the value around 0xFFFF', :aggregate_failures do
+    it 'wraps the value around 0xFFFF', :aggregate_failures do
       registers.hl = 0xFFFF + 0xFFF1
 
       expect(registers.h).to eq(0xFF)
@@ -210,7 +210,7 @@ describe Akane::Gameboy::Cpu::Registers do
       expect(registers.sp).to eq(0x9999)
     end
 
-    it 'alwayses wrap the value around 0xFFFF' do
+    it 'wraps the value around 0xFFFF' do
       registers.sp = 0xFFFF + 1
 
       expect(registers.sp).to eq(0x0000)
@@ -224,7 +224,7 @@ describe Akane::Gameboy::Cpu::Registers do
       expect(registers.pc).to eq(0x9999)
     end
 
-    it 'alwayses wrap the value around 0xFFFF' do
+    it 'wraps the value around 0xFFFF' do
       registers.pc = 0xFFFF + 1
 
       expect(registers.pc).to eq(0x0000)
