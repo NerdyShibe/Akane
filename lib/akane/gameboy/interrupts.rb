@@ -63,7 +63,7 @@ module Akane
       #
       # - Ignores the 3 upper bits that are not bound to any interrupt type.
       def any_pending?
-        (@if & @ie & 0b00011111) != 0
+        (@if & @ie).anybits?(0b00011111)
       end
 
       # Returns which interrupt is currently requested and enabled, sorted by priority.
@@ -92,7 +92,7 @@ module Akane
       # Checks if a given interrupt is requested and enabled at the same time.
       def pending?(type)
         set_mask = (1 << TYPES[type])
-        ((@if & set_mask) & (@ie & set_mask) & 0b00011111) != 0
+        ((@if & set_mask) & (@ie & set_mask)).anybits?(0b00011111)
       end
     end
   end

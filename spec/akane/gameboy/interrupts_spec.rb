@@ -115,7 +115,7 @@ describe Akane::Gameboy::Interrupts do
   end
 
   describe '#highest_pending' do
-    context 'vblank' do
+    context 'when :vblank is highest' do
       it 'returns :vblank when all 5 interrupt bits are set' do
         interrupts.if_register = 0b00011111
         interrupts.ie_register = 0b00011111
@@ -138,7 +138,7 @@ describe Akane::Gameboy::Interrupts do
       end
     end
 
-    context 'lcd' do
+    context 'when :lcd is highest' do
       it 'returns :lcd when 4 of the interrupt bits are set' do
         interrupts.if_register = 0b00011110
         interrupts.ie_register = 0b00011110
@@ -161,7 +161,7 @@ describe Akane::Gameboy::Interrupts do
       end
     end
 
-    context 'timer' do
+    context 'when :timer is highest' do
       it 'returns :timer when 3 of the interrupt bits are set' do
         interrupts.if_register = 0b00011100
         interrupts.ie_register = 0b00011100
@@ -184,7 +184,7 @@ describe Akane::Gameboy::Interrupts do
       end
     end
 
-    context 'serial' do
+    context 'when :serial is highest' do
       it 'returns :serial when 2 of the interrupt bits are set' do
         interrupts.if_register = 0b00011000
         interrupts.ie_register = 0b00011000
@@ -207,7 +207,7 @@ describe Akane::Gameboy::Interrupts do
       end
     end
 
-    context 'joypad' do
+    context 'when :joypad is highest' do
       it 'returns :joypad when only its interrupt bit is set' do
         interrupts.if_register = 0b00010000
         interrupts.ie_register = 0b00010000
@@ -230,7 +230,7 @@ describe Akane::Gameboy::Interrupts do
       end
     end
 
-    context 'none' do
+    context 'when there is none' do
       it 'returns nil if no bit is set in neither register' do
         interrupts.if_register = 0b00000000
         interrupts.ie_register = 0b00000000
@@ -262,7 +262,7 @@ describe Akane::Gameboy::Interrupts do
   end
 
   describe '#request' do
-    context 'vblank' do
+    context 'when :vblank is requested' do
       it 'sets Bit 0 of the IF register when requesting :vblank interrupt' do
         interrupts.if_register = 0b11100000
         interrupts.request(:vblank)
@@ -278,7 +278,7 @@ describe Akane::Gameboy::Interrupts do
       end
     end
 
-    context 'lcd' do
+    context 'when :lcd is requested' do
       it 'sets Bit 1 of the IF register when requesting :lcd interrupt' do
         interrupts.if_register = 0b11100000
         interrupts.request(:lcd)
@@ -294,7 +294,7 @@ describe Akane::Gameboy::Interrupts do
       end
     end
 
-    context 'timer' do
+    context 'when :timer is requested' do
       it 'sets Bit 2 of the IF register when requesting :timer interrupt' do
         interrupts.if_register = 0b11100000
         interrupts.request(:timer)
@@ -310,7 +310,7 @@ describe Akane::Gameboy::Interrupts do
       end
     end
 
-    context 'serial' do
+    context 'when :serial is requested' do
       it 'sets Bit 3 of the IF register when requesting :serial interrupt' do
         interrupts.if_register = 0b11100000
         interrupts.request(:serial)
@@ -326,7 +326,7 @@ describe Akane::Gameboy::Interrupts do
       end
     end
 
-    context 'joypad' do
+    context 'when :joypad is requested' do
       it 'sets Bit 4 of the IF register when requesting :joypad interrupt' do
         interrupts.if_register = 0b11100000
         interrupts.request(:joypad)
@@ -344,7 +344,7 @@ describe Akane::Gameboy::Interrupts do
   end
 
   describe '#service' do
-    context 'vblank' do
+    context 'when :vblank is serviced' do
       it 'clears Bit 0 of the IF register when servicing :vblank interrupt' do
         interrupts.if_register = 0b11111111
         interrupts.service(:vblank)
@@ -360,7 +360,7 @@ describe Akane::Gameboy::Interrupts do
       end
     end
 
-    context 'lcd' do
+    context 'when :lcd is serviced' do
       it 'clears Bit 1 of the IF register when servicing :lcd interrupt' do
         interrupts.if_register = 0b11111111
         interrupts.service(:lcd)
@@ -376,7 +376,7 @@ describe Akane::Gameboy::Interrupts do
       end
     end
 
-    context 'timer' do
+    context 'when :timer is serviced' do
       it 'clears Bit 2 of the IF register when servicing :timer interrupt' do
         interrupts.if_register = 0b11111111
         interrupts.service(:timer)
@@ -392,7 +392,7 @@ describe Akane::Gameboy::Interrupts do
       end
     end
 
-    context 'serial' do
+    context 'when :serial is serviced' do
       it 'clears Bit 3 of the IF register when servicing :serial interrupt' do
         interrupts.if_register = 0b11111111
         interrupts.service(:serial)
@@ -408,7 +408,7 @@ describe Akane::Gameboy::Interrupts do
       end
     end
 
-    context 'joypad' do
+    context 'when :joypad is serviced' do
       it 'clears Bit 4 of the IF register when servicing :joypad interrupt' do
         interrupts.if_register = 0b11111111
         interrupts.service(:joypad)

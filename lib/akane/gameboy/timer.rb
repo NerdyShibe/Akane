@@ -14,7 +14,7 @@ module Akane
       # - 0b01: 16 = 2^4    -> 2^4 = 2^(N+1)  -> N = 3 -> Watch Bit 3 of the system counter.
       # - 0b10: 64 = 2^6    -> 2^6 = 2^(N+1)  -> N = 5 -> Watch Bit 5 of the system counter.
       # - 0b11: 256 = 2^8   -> 2^8 = 2^(N+1)  -> N = 7 -> Watch Bit 7 of the system counter.
-      COUNTER_BITS_TO_WATCH = [9, 3, 5, 7]
+      COUNTER_BITS_TO_WATCH = [9, 3, 5, 7].freeze
 
       # Returns the 8-bit value stored in the TIMA (Timer Counter) register.
       attr_reader :tima
@@ -57,7 +57,7 @@ module Akane
 
       # Sets a 8-bit value into the TIMA register.
       def tima=(value)
-        if @tima_overflow && @tima == 0x00
+        if @tima_overflow && @tima.zero?
           @tima_overflow = false
         end
 
@@ -107,7 +107,7 @@ module Akane
 
         previous_tima = @tima
         @tima = (@tima + 1) & 0xFF if increment_tima?(previous_counter)
-        @tima_overflow = true if previous_tima == 0xFF && @tima == 0x00
+        @tima_overflow = true if previous_tima == 0xFF && @tima.zero?
       end
 
       private
