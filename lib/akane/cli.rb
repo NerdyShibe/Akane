@@ -4,7 +4,10 @@ module Akane
   # Handles arguments parsing when launching the emulator.
   class CLI
     def self.run(arguments)
+      rom_path = arguments.first.split('=').last
       puts "Arguments used: #{arguments}"
+
+      Akane::Emulator.start(rom_path)
     end
   end
 end
