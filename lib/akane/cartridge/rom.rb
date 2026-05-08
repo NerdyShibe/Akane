@@ -4,16 +4,42 @@ module Akane
   class Cartridge
     # models the ROM inside the Game Boy cartridge.
     class Rom
-      def initialize(rom_path)
-        @data = File.binread(rom_path)
+      CARTRIDGE_TYPES = {
+        0x00 => :rom_only
+      }.freeze
+
+      ROM_SIZES = {
+        0x00 => 32 * 1024,
+        0x01 => 64 * 1024,
+        0x02 => 128 * 1024
+      }.freeze
+
+      RAM_SIZES = {
+        0x00 => 0
+      }.freeze
+
+      def self.from_file(file_path)
+        new(File.binread(file_path).bytes)
+      end
+
+      # Creates a ROM object given the bytes array and freezes it (read-only).
+      def initialize(data)
+        @data = data
+        @data.freeze
+      end
+
+      # Returns a 8-bit value stored in the given address/offset.
+      def read_byte(offset)
+        @data[offset]
       end
 
       def header
         @data[0x0100..0x014F]
       end
 
+      # Returns a string containing the ROM title.
       def title
-        @data[0x0134..0x0143]
+        @data[0x0134..0x0143].pack('C*').strip
       end
 
       def manufacturer_code
@@ -32,16 +58,19 @@ module Akane
         @data[0x0146]
       end
 
+      # Returns a symbol for the cartridge type (:rom_only, :mbc1, ...).
       def cartridge_type
-        @data[0x0147]
+        CARTRIDGE_TYPES[@data[0x0147]]
       end
 
+      # Returns an Integer indicating the ROM size.
       def rom_size
-        @data[0x0148]
+        ROM_SIZES[@data[0x0148]]
       end
 
+      # Returns an Integer indicating the RAM size.
       def ram_size
-        @data[0x0149]
+        RAM_SIZES[@data[0x0149]]
       end
 
       def destination_code
@@ -54,6 +83,21 @@ module Akane
 
       def mask_rom_version
         @data[0x014C]
+      end
+
+      # Returns a 8-bit value for the header checksum.
+      def header_checksum
+        @data[0x014D]
+      end
+
+      # Calculates the checksum and returns true if it matches.
+      def valid_checksum?
+        checksum = 0
+        (0x0134..0x014C).each do |address|
+          checksum = checksum - @data[address] - 1
+        end
+
+        (checksum & 0xFF) == header_checksum
       end
     end
   end
