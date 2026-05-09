@@ -7,6 +7,7 @@ module Akane
       def write_vram: (Integer offset, Integer value) -> void
       def read_oam: (Integer offset) -> Integer
       def write_oam: (Integer offset, Integer value) -> void
+      def tick: () -> void
     end
   end
 end

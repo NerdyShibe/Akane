@@ -30,6 +30,10 @@ module Akane
       def write_oam(offset, value)
         @oam.write_byte(offset, value)
       end
+
+      def tick
+        # tick logic
+      end
     end
   end
 end

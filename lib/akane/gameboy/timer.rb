@@ -57,9 +57,7 @@ module Akane
 
       # Sets a 8-bit value into the TIMA register.
       def tima=(value)
-        if @tima_overflow && @tima.zero?
-          @tima_overflow = false
-        end
+        @tima_overflow = false if @tima_overflow && @tima.zero?
 
         @tima = value & 0xFF
       end

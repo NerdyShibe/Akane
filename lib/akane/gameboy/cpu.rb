@@ -55,13 +55,12 @@ module Akane
       # Determines which instruction should be executed for each Opcode.
       def decode_opcode
         @instruction = INSTRUCTIONS[@opcode]
+        raise "Opcode not implemented yet: #{@opcode}" if @instruction.nil?
       end
 
       # Executes the logic for the current instruction.
       def execute_instruction
         @instruction.call
-      rescue NoMethodError
-        puts "Opcode not implemented yet: #{@opcode}"
       end
 
       # Reads a byte from the Bus at a given address.
