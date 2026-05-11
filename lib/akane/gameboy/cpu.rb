@@ -6,6 +6,12 @@ module Akane
   module Gameboy
     # Models the CPU behavior from the Game Boy.
     class Cpu
+      Instruction = Data.define(:mnemonic, :steps_proc) do
+        def execute
+          steps_proc.call
+        end
+      end
+
       include Instructions
 
       def initialize(bus, interrupts, advance_components)
@@ -14,13 +20,13 @@ module Akane
         @advance_components = advance_components
 
         @registers = Registers.new
-        @instructions = Array.new(256)
-        # @cb_instructions = Instructions.wire_cb_opcodes
+        @instructions = load_base_instructions
+        @cb_instructions = load_cb_instructions
         @ime = false
         @opcode = nil
         @instruction = nil
 
-        wire_instructions
+        @m_cycles = 0
       end
 
       # Core CPU loop:
@@ -46,12 +52,29 @@ module Akane
         puts 'Interrupts handled'
       end
 
-      # Special read that gets the byte pointed to by the Program Counter.
+      # Fetches the next immediate byte from memory pointed to by the Program Counter.
       def fetch_byte
         byte = bus_read(@registers.pc)
         @registers.pc += 1
 
         byte
+      end
+
+      # Fetches the next 2 immediate bytes from memory.
+      #
+      # - The Game Boy uses little endian format.
+      # - This means that the first byte fetched is the least significant one.
+      # - So if the memory has these next 2 bytes: $50 $01, the word is: $0150
+      def fetch_word
+        lower_byte = fetch_byte
+        higher_byte = fetch_byte
+
+        (higher_byte << 8) | lower_byte
+      end
+
+      def jump_to(address)
+        @registers.pc = address
+        internal_processing
       end
 
       # Determines which instruction should be executed for each Opcode.
@@ -62,7 +85,7 @@ module Akane
 
       # Executes the logic for the current instruction.
       def execute_instruction
-        @instruction.execute.call
+        @instruction.execute
       end
 
       # Reads a byte from the Bus at a given address.
@@ -86,15 +109,17 @@ module Akane
 
       # Syncs all components after each M-cycle.
       def advance_cycles(t_cycles)
+        @m_cycles += 1
         @advance_components.call(t_cycles)
       end
 
       def log(old_pc, instruction)
-        puts "#{format('$%04X', old_pc)}  |  " \
-             "#{instruction.mnemonic}  |  " \
-             "#{format('$%02X', bus_read(old_pc))} " \
-             "#{format('$%02X', bus_read(old_pc + 1))} " \
-             "#{format('$%02X', bus_read(old_pc + 1))}  |  " \
+        puts "#{format('%04d', @m_cycles)}    |  " \
+             "#{format('$%04X', old_pc)}  |  " \
+             "#{instruction.mnemonic}          |  " \
+             "#{format('$%02X', @bus.read_byte(old_pc))} " \
+             "#{format('$%02X', @bus.read_byte(old_pc + 1))} " \
+             "#{format('$%02X', @bus.read_byte(old_pc + 2))}  |  " \
              "AF: $#{format('%04X', @registers.af)}  |  " \
              "BC: $#{format('%04X', @registers.bc)}  |  " \
              "DE: $#{format('%04X', @registers.de)}  |  " \
