@@ -2,7 +2,9 @@
 .tool-versions
 .vscode/
 .ruby-lsp/
+.yardoc/
 coverage/
+doc/
 docs/
 rdoc/
 roms/
