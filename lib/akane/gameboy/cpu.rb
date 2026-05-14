@@ -18,6 +18,7 @@ module Akane
 
         @registers = Registers.new
         @ime = false
+        @ime_scheduled = false
         @opcode = nil
         @instruction = nil
 
@@ -45,7 +46,7 @@ module Akane
 
       # Fetches the next immediate byte from memory pointed to by the Program Counter.
       def fetch_next_byte
-        byte = bus_read(@registers.pc)
+        byte = bus_read(address: @registers.pc)
         @registers.pc += 1
 
         byte
@@ -63,17 +64,63 @@ module Akane
         (msb << 8) | lsb
       end
 
+      # Reads a byte from the Bus at a given address.
+      def bus_read(address:)
+        byte = @bus.read_byte(address)
+        advance_cycles(4)
+
+        byte
+      end
+
+      # Requests a Bus write at a given address with a given value.
+      def bus_write(address:, value:)
+        @bus.write_byte(address, value)
+        advance_cycles(4)
+      end
+
       # Jumps execution to a given address by setting the address value into the PC.
       def jump_to(address:)
         @registers.pc = address
         internal_processing
       end
 
+      # Converts an unsigned byte into a value between -128 to 127 to use as an offset.
+      def sign_value(byte)
+        byte >= 128 ? (byte - 256) : byte
+      end
+
+      # Performs an addition envolving a 16-bit value,
+      # CPU consumes an additional cycle to handle 16-bit values.
+      def add16(value1, value2)
+        result = value1 + value2
+        internal_processing
+
+        result
+      end
+
+      # Performs a subtraction envolving a 16-bit value,
+      # CPU consumes an additional cycle to handle 16-bit values.
+      def sub16(value1, value2)
+        result = value1 - value2
+        internal_processing
+
+        result
+      end
+
+      def disable_interrupts
+        @ime = false
+      end
+
+      def enable_interrupts
+        @ime_scheduled = true
+      end
+
       private
 
       # Checks if any interrupt is enabled and requested to service.
       def handle_interrupts
-        puts 'Interrupts handled'
+        @ime = true if @ime_scheduled
+        @ime_scheduled = false
       end
 
       # Determines which instruction should be executed for each Opcode.
@@ -85,20 +132,6 @@ module Akane
       # Executes the logic for the current instruction.
       def execute_instruction
         @instruction.execute
-      end
-
-      # Reads a byte from the Bus at a given address.
-      def bus_read(address)
-        byte = @bus.read_byte(address)
-        advance_cycles(4)
-
-        byte
-      end
-
-      # Requests a Bus write at a given address with a given value.
-      def bus_write(address:, value:)
-        @bus.write_byte(address, value)
-        advance_cycles(4)
       end
 
       # Emulates CPU internal processing which advance cycles without Bus access.
@@ -116,19 +149,21 @@ module Akane
         return unless @verbose
 
         $stdout.printf(
-          '%<cycles>04d | $%<pc>04X | %<im>-12s (took %<ic>d) | $%<b1>02X $%<b2>02X $%<b3>02X | ' \
-          "AF: $%<af>04X BC: $%<bc>04X DE: $%<de>04X HL: $%<hl>04X\n",
+          '%<cycles>04d | $%<pc>04X | %<im>-12s (took %<ic>d) (%<ib>d) | $%<b1>02X $%<b2>02X $%<b3>02X | ' \
+          "AF: $%<af>04X BC: $%<bc>04X DE: $%<de>04X HL: $%<hl>04X | [HL]: $%<mem_hl>02X\n",
           cycles: @m_cycles,
           pc: old_pc,
           im: instruction.mnemonic,
           ic: instruction.m_cycles,
+          ib: instruction.bytes,
           b1: @bus.read_byte(old_pc),
           b2: @bus.read_byte(old_pc + 1),
           b3: @bus.read_byte(old_pc + 2),
           af: @registers.af,
           bc: @registers.bc,
           de: @registers.de,
-          hl: @registers.hl
+          hl: @registers.hl,
+          mem_hl: @bus.read_byte(@registers.hl)
         )
       end
 
