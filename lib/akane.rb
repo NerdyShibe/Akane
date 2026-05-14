@@ -4,6 +4,7 @@ require_relative 'akane/cli'
 require_relative 'akane/emulator'
 require_relative 'akane/cartridge'
 require_relative 'akane/cartridge/rom'
+require_relative 'akane/utils/bit_operations'
 require_relative 'akane/gameboy/apu'
 require_relative 'akane/gameboy/bus'
 require_relative 'akane/gameboy/interrupts'
@@ -13,11 +14,11 @@ require_relative 'akane/gameboy/ram'
 require_relative 'akane/gameboy/serial'
 require_relative 'akane/gameboy/timer'
 require_relative 'akane/gameboy/cpu/instructions/base'
-require_relative 'akane/gameboy/cpu/instructions/jump'
-require_relative 'akane/gameboy/cpu/instructions/load8'
-require_relative 'akane/gameboy/cpu/instructions/load16'
-require_relative 'akane/gameboy/cpu/instructions/nop'
-require_relative 'akane/gameboy/cpu/instructions/xor'
+
+Dir.glob("#{__dir__}/akane/gameboy/cpu/instructions/*.rb").each do |file|
+  require file
+end
+
 require_relative 'akane/gameboy/cpu/instructions'
 require_relative 'akane/gameboy/cpu/registers'
 require_relative 'akane/gameboy/cpu'

@@ -14,25 +14,48 @@ module Akane
           # Opcodes 0x00 - 0x0F
           instructions[0x00] = Nop.new(cpu: self)
 
+          instructions[0x05] = Dec.new(cpu: self, operand: :b)
           instructions[0x06] = Load8.new(cpu: self, target: :b, source: :imm8)
 
+          instructions[0x0D] = Dec.new(cpu: self, operand: :c)
           instructions[0x0E] = Load8.new(cpu: self, target: :c, source: :imm8)
 
           # Opcodes 0x10 - 0x1F
+          instructions[0x15] = Dec.new(cpu: self, operand: :d)
           instructions[0x16] = Load8.new(cpu: self, target: :d, source: :imm8)
 
+          instructions[0x18] = Jr.new(cpu: self)
+
+          instructions[0x1D] = Dec.new(cpu: self, operand: :e)
           instructions[0x1E] = Load8.new(cpu: self, target: :e, source: :imm8)
 
           # Opcodes 0x20 - 0x2F
+          instructions[0x20] = Jr.new(cpu: self, condition: :nz)
           instructions[0x21] = Load16.new(cpu: self, target: :hl, source: :imm16)
+          instructions[0x22] = Load8.new(cpu: self, target: :mem_hli, source: :a)
 
+          instructions[0x25] = Dec.new(cpu: self, operand: :h)
           instructions[0x26] = Load8.new(cpu: self, target: :h, source: :imm8)
 
+          instructions[0x28] = Jr.new(cpu: self, condition: :z)
+
+          instructions[0x2A] = Load8.new(cpu: self, target: :a, source: :mem_hli)
+
+          instructions[0x2D] = Dec.new(cpu: self, operand: :l)
           instructions[0x2E] = Load8.new(cpu: self, target: :l, source: :imm8)
 
           # Opcodes 0x30 - 0x3F
+          instructions[0x30] = Jr.new(cpu: self, condition: :nc)
+          instructions[0x32] = Load8.new(cpu: self, target: :mem_hld, source: :a)
+
+          instructions[0x05] = Dec.new(cpu: self, operand: :mem_hl)
           instructions[0x36] = Load8.new(cpu: self, target: :mem_hl, source: :imm8)
 
+          instructions[0x38] = Jr.new(cpu: self, condition: :c)
+
+          instructions[0x3A] = Load8.new(cpu: self, target: :a, source: :mem_hld)
+
+          instructions[0x3D] = Dec.new(cpu: self, operand: :a)
           instructions[0x3E] = Load8.new(cpu: self, target: :a, source: :imm8)
 
           # Opcodes 0x40 - 0x4F
@@ -108,6 +131,14 @@ module Akane
           instructions[0x7F] = Load8.new(cpu: self, target: :a, source: :a)
 
           # Opcodes 0x80 - 0x8F
+          instructions[0x80] = Add8.new(cpu: self, source: :b)
+          instructions[0x81] = Add8.new(cpu: self, source: :c)
+          instructions[0x82] = Add8.new(cpu: self, source: :d)
+          instructions[0x83] = Add8.new(cpu: self, source: :e)
+          instructions[0x84] = Add8.new(cpu: self, source: :h)
+          instructions[0x85] = Add8.new(cpu: self, source: :l)
+          instructions[0x86] = Add8.new(cpu: self, source: :mem_hl)
+          instructions[0x87] = Add8.new(cpu: self, source: :a)
 
           # Opcodes 0x90 - 0x9F
 
@@ -123,16 +154,39 @@ module Akane
           instructions[0xAF] = Xor.new(cpu: self, source: :a)
 
           # Opcodes 0xB0 - 0xBF
+          instructions[0xB0] = Or.new(cpu: self, source: :b)
+          instructions[0xB1] = Or.new(cpu: self, source: :c)
+          instructions[0xB2] = Or.new(cpu: self, source: :d)
+          instructions[0xB3] = Or.new(cpu: self, source: :e)
+          instructions[0xB4] = Or.new(cpu: self, source: :h)
+          instructions[0xB5] = Or.new(cpu: self, source: :l)
+          instructions[0xB6] = Or.new(cpu: self, source: :mem_hl)
+          instructions[0xB7] = Or.new(cpu: self, source: :a)
 
           # Opcodes 0xC0 - 0xCF
           instructions[0xC3] = Jump.new(cpu: self, location: :imm16)
 
+          instructions[0xC6] = Add8.new(cpu: self, source: :imm8)
+
           # Opcodes 0xD0 - 0xDF
 
           # Opcodes 0xE0 - 0xEF
+          instructions[0xE0] = Ldh.new(cpu: self, target: :mem_unsig8, source: :a)
+
+          instructions[0xE2] = Ldh.new(cpu: self, target: :mem_c, source: :a)
+
           instructions[0xEE] = Xor.new(cpu: self, source: :imm8)
 
           # Opcodes 0xF0 - 0xFF
+          instructions[0xF0] = Ldh.new(cpu: self, target: :a, source: :mem_unsig8)
+
+          instructions[0xF2] = Ldh.new(cpu: self, target: :a, source: :mem_c)
+
+          instructions[0xF3] = Di.new(cpu: self)
+
+          instructions[0xF6] = Or.new(cpu: self, source: :imm8)
+
+          instructions[0xFB] = Ei.new(cpu: self)
 
           instructions.freeze
         end
