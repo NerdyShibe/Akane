@@ -154,8 +154,14 @@ module Akane
 
       # Determines which instruction should be executed for each Opcode.
       def decode_instruction
-        @instruction = @instructions[@opcode]
-        raise "Opcode not implemented yet: #{format('$%02X', @opcode)}" if @instruction.nil?
+        if @opcode == 0xCB
+          @opcode = fetch_next_byte
+          @instruction = @cb_instructions[@opcode]
+          raise "CB opcode not implemented yet: $CB #{format('$%02X', @opcode)}" if @instruction.nil?
+        else
+          @instruction = @instructions[@opcode]
+          raise "Opcode not implemented yet: #{format('$%02X', @opcode)}" if @instruction.nil?
+        end
       end
 
       # Executes the logic for the current instruction.
@@ -173,8 +179,9 @@ module Akane
         return unless @verbose
 
         $stdout.printf(
-          '%<cycles>04d | $%<pc>04X | %<im>-14s (took %<ic>d) | $%<b1>02X $%<b2>02X $%<b3>02X | ' \
-          "AF: $%<af>04X BC: $%<bc>04X DE: $%<de>04X HL: $%<hl>04X | [HL]: $%<mem_hl>02X\n",
+          '%<cycles>04d | $%<pc>04X | %<im>-14s (took %<ic>d) | ' \
+          '$%<b1>02X $%<b2>02X $%<b3>02X | F: %<f>08b | ' \
+          "A: $%<a>02X BC: $%<bc>04X DE: $%<de>04X HL: $%<hl>04X | [HL]: $%<mem_hl>02X\n",
           cycles: @m_cycles,
           pc: old_pc,
           im: instruction.mnemonic,
@@ -182,7 +189,8 @@ module Akane
           b1: @bus.read_byte(address: old_pc),
           b2: @bus.read_byte(address: old_pc + 1),
           b3: @bus.read_byte(address: old_pc + 2),
-          af: @registers.af,
+          f: @registers.f,
+          a: @registers.a,
           bc: @registers.bc,
           de: @registers.de,
           hl: @registers.hl,
