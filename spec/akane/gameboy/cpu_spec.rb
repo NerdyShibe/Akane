@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 describe Akane::Gameboy::Cpu do
-  subject(:cpu) { described_class.new }
+  include CpuHelper
 
-  let(:registers) { Akane::Gameboy::Cpu::Registers.new }
+  subject(:cpu) { build_cpu(rom_data) }
+
+  let(:rom_data) { Array.new(0x8000, 0x00) }
+  let(:registers) { cpu.registers }
 
   describe '#initialize' do
     it 'initializes the cpu' do

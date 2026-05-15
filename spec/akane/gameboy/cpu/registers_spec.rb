@@ -325,65 +325,65 @@ describe Akane::Gameboy::Cpu::Registers do
 
   describe '#z_flag=' do
     it 'correctlies set Bit7 of the F register' do
-      registers.f = 0b00000000
-      registers.z_flag = 1
+      registers.f = 0x00
+      registers.z_flag = true
 
-      expect(registers.f).to eq(0b10000000)
+      expect(registers.z_flag).to eq(1)
     end
 
     it 'correctlies clear Bit7 of the F register' do
-      registers.f = 0b11110000
-      registers.z_flag = 0
+      registers.f = 0xFF
+      registers.z_flag = false
 
-      expect(registers.f).to eq(0b01110000)
+      expect(registers.z_flag).to eq(0)
     end
   end
 
   describe '#n_flag=' do
     it 'correctlies set Bit6 of the F register' do
-      registers.f = 0b00000000
-      registers.n_flag = 1
+      registers.f = 0x00
+      registers.n_flag = true
 
-      expect(registers.f).to eq(0b01000000)
+      expect(registers.n_flag).to eq(1)
     end
 
     it 'correctlies clear Bit6 of the F register' do
-      registers.f = 0b11110000
-      registers.n_flag = 0
+      registers.f = 0xFF
+      registers.n_flag = false
 
-      expect(registers.f).to eq(0b10110000)
+      expect(registers.n_flag).to eq(0)
     end
   end
 
   describe '#h_flag=' do
     it 'correctlies set Bit5 of the F register' do
-      registers.f = 0b00000000
-      registers.h_flag = 1
+      registers.f = 0x00
+      registers.h_flag = true
 
-      expect(registers.f).to eq(0b00100000)
+      expect(registers.h_flag).to eq(1)
     end
 
     it 'correctlies clear Bit5 of the F register' do
-      registers.f = 0b11110000
-      registers.h_flag = 0
+      registers.f = 0xFF
+      registers.h_flag = false
 
-      expect(registers.f).to eq(0b11010000)
+      expect(registers.h_flag).to eq(0)
     end
   end
 
   describe '#c_flag=' do
     it 'correctlies set Bit4 of the F register' do
-      registers.f = 0b00000000
-      registers.c_flag = 1
+      registers.f = 0x00
+      registers.c_flag = true
 
-      expect(registers.f).to eq(0b00010000)
+      expect(registers.c_flag).to eq(1)
     end
 
     it 'correctlies clear Bit4 of the F register' do
-      registers.f = 0b11110000
-      registers.c_flag = 0
+      registers.f = 0xFF
+      registers.c_flag = false
 
-      expect(registers.f).to eq(0b11100000)
+      expect(registers.c_flag).to eq(0)
     end
   end
 end

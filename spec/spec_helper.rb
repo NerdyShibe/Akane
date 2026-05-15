@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
-require 'debug'
 require 'simplecov'
 SimpleCov.start
 
+require 'debug'
 require_relative '../lib/akane'
+
+Dir[File.join(__dir__, 'support', '**', '*.rb')].each { |f| require f }
 
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
