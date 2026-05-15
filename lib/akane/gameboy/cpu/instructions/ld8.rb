@@ -5,19 +5,21 @@ module Akane
     class Cpu
       module Instructions
         # Holds the logic of all the 8-bit Load instructions.
-        class Load8 < Base
+        class Ld8 < Base
           def initialize(cpu:, target:, source:)
             super(cpu:)
 
             @mnemonic = "LD #{format_operand(target)}, #{format_operand(source)}"
-            @bytes    = 1 + fetch_cost(target) + fetch_cost(source)
-            @m_cycles = 1 + memory_cost(target) + memory_cost(source)
             @logic    = define_logic(target, source)
           end
 
           private
 
           def define_logic(target, source)
+            return -> { ld_a_mem_imm16 } if source == :mem_imm16
+            return -> { ld_a_mem_bc } if source == :mem_bc
+            return -> { ld_a_mem_de } if source == :mem_de
+
             case target
             when :a       then load_a(source)
             when :b       then load_b(source)
@@ -29,6 +31,9 @@ module Akane
             when :mem_hl  then load_mem_hl(source)
             when :mem_hli then load_mem_hli
             when :mem_hld then load_mem_hld
+            when :mem_bc  then -> { @cpu.bus_write(address: @registers.bc, value: @registers.a) }
+            when :mem_de  then -> { @cpu.bus_write(address: @registers.de, value: @registers.a) }
+            when :mem_imm16 then -> { ld_mem_imm16_a }
             else
               raise 'NotImplementedError'
             end
@@ -167,6 +172,24 @@ module Akane
               @cpu.bus_write(address: @registers.hl, value: @registers.a)
               @registers.hl -= 1
             end
+          end
+
+          def ld_mem_imm16_a
+            imm16_address = @cpu.fetch_next_word
+            @cpu.bus_write(address: imm16_address, value: @registers.a)
+          end
+
+          def ld_a_mem_imm16
+            imm16_address = @cpu.fetch_next_word
+            @registers.a = @cpu.bus_read(address: imm16_address)
+          end
+
+          def ld_a_mem_bc
+            @registers.a = @cpu.bus_read(address: @registers.bc)
+          end
+
+          def ld_a_mem_de
+            @registers.a = @cpu.bus_read(address: @registers.de)
           end
         end
       end
