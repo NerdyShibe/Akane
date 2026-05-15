@@ -218,14 +218,15 @@ module Akane
           # Opcodes 0xC0 - 0xCF
           instructions[0xC0] = Ret.new(cpu: self, condition: :nz)
           instructions[0xC1] = Pop.new(cpu: self, reg16: :bc)
-
-          instructions[0xC3] = Jump.new(cpu: self, location: :imm16)
+          instructions[0xC2] = Jp.new(cpu: self, location: :imm16, condition: :nz)
+          instructions[0xC3] = Jp.new(cpu: self, location: :imm16)
           instructions[0xC4] = Call.new(cpu: self, condition: :nz)
           instructions[0xC5] = Push.new(cpu: self, reg16: :bc)
           instructions[0xC6] = Add8.new(cpu: self, source: :imm8)
           instructions[0xC7] = Rst.new(cpu: self, vector: 0x00)
           instructions[0xC8] = Ret.new(cpu: self, condition: :z)
           instructions[0xC9] = Ret.new(cpu: self)
+          instructions[0xCA] = Jp.new(cpu: self, location: :imm16, condition: :z)
 
           instructions[0xCC] = Call.new(cpu: self, condition: :z)
           instructions[0xCD] = Call.new(cpu: self)
@@ -235,7 +236,7 @@ module Akane
           # Opcodes 0xD0 - 0xDF
           instructions[0xD0] = Ret.new(cpu: self, condition: :nc)
           instructions[0xD1] = Pop.new(cpu: self, reg16: :de)
-
+          instructions[0xD2] = Jp.new(cpu: self, location: :imm16, condition: :nc)
           instructions[0xD3] = nil # not implemented in the Game Boy
           instructions[0xD4] = Call.new(cpu: self, condition: :nc)
           instructions[0xD5] = Push.new(cpu: self, reg16: :de)
@@ -243,7 +244,7 @@ module Akane
           instructions[0xD7] = Rst.new(cpu: self, vector: 0x10)
           instructions[0xD8] = Ret.new(cpu: self, condition: :c)
           instructions[0xD9] = Ret.new(cpu: self, enable_ime: true)
-
+          instructions[0xDA] = Jp.new(cpu: self, location: :imm16, condition: :c)
           instructions[0xDB] = nil # not implemented in the Game Boy
           instructions[0xDC] = Call.new(cpu: self, condition: :c)
           instructions[0xDD] = nil # not implemented in the Game Boy
@@ -259,6 +260,8 @@ module Akane
           instructions[0xE5] = Push.new(cpu: self, reg16: :hl)
           instructions[0xE6] = And.new(cpu: self, source: :imm8)
           instructions[0xE7] = Rst.new(cpu: self, vector: 0x20)
+
+          instructions[0xE9] = Jp.new(cpu: self, location: :hl)
 
           instructions[0xEB] = nil # not implemented in the Game Boy
           instructions[0xEC] = nil # not implemented in the Game Boy
