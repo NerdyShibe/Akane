@@ -16,12 +16,20 @@ module Akane
           private
 
           def build_logic(target, source)
+            return -> { ld_mem_imm16_sp } if target == :mem_imm16
+
             case target
             when :bc then -> { @registers.hl = @cpu.fetch_next_word }
             when :de then -> { @registers.de = @cpu.fetch_next_word }
             when :hl
               case source
               when :imm16 then -> { @registers.hl = @cpu.fetch_next_word }
+              when :sp_plus_sig8
+                lambda do
+                  unsigned_byte = @cpu.fetch_next_byte
+                  signed_value = @cpu.sign_value(unsigned_byte)
+                  @registers.hl = @cpu.add16(@registers.sp, signed_value)
+                end
               end
             when :sp
               case source
@@ -29,6 +37,23 @@ module Akane
               when :hl    then -> { @registers.sp = @registers.hl }
               end
             end
+          end
+
+          # Loads the LSB from SP to the imm16 address.
+          # Loads the MSB from SP to the imm16 address + 1.
+          #
+          # M-cycle 1: Fetches the opcode.
+          # M-cycle 2: Fetches the LSB of the address to be used.
+          # M-cycle 3: Fetches the MSB of the address to be used.
+          # M-cycle 4: Writes the LSB of SP into the address.
+          # M-cycle 5: Writes the MSB of SP into the address + 1.
+          #
+          def ld_mem_imm16_sp
+            imm16 = @cpu.fetch_next_word
+            sp = @registers.sp
+
+            @cpu.bus_write(address: imm16, value: sp & 0xFF)
+            @cpu.bus_write(address: imm16 + 1, value: (sp >> 8) & 0xFF)
           end
         end
       end

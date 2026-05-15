@@ -13,11 +13,14 @@ module Akane
 
           # Opcodes 0x00 - 0x0F
           instructions[0x00] = Nop.new(cpu: self)
+          instructions[0x01] = Ld16.new(cpu: self, target: :bc, source: :imm16)
 
           instructions[0x03] = Inc.new(cpu: self, operand: :bc)
           instructions[0x04] = Inc.new(cpu: self, operand: :b)
           instructions[0x05] = Dec.new(cpu: self, operand: :b)
           instructions[0x06] = Load8.new(cpu: self, target: :b, source: :imm8)
+
+          instructions[0x08] = Ld16.new(cpu: self, target: :mem_imm16, source: :sp)
 
           instructions[0x0B] = Inc.new(cpu: self, operand: :bc)
           instructions[0x0C] = Inc.new(cpu: self, operand: :c)
@@ -25,6 +28,8 @@ module Akane
           instructions[0x0E] = Load8.new(cpu: self, target: :c, source: :imm8)
 
           # Opcodes 0x10 - 0x1F
+          instructions[0x11] = Ld16.new(cpu: self, target: :de, source: :imm16)
+
           instructions[0x13] = Inc.new(cpu: self, operand: :de)
           instructions[0x14] = Inc.new(cpu: self, operand: :d)
           instructions[0x15] = Dec.new(cpu: self, operand: :d)
@@ -56,7 +61,7 @@ module Akane
 
           # Opcodes 0x30 - 0x3F
           instructions[0x30] = Jr.new(cpu: self, condition: :nc)
-
+          instructions[0x31] = Ld16.new(cpu: self, target: :sp, source: :imm16)
           instructions[0x32] = Load8.new(cpu: self, target: :mem_hld, source: :a)
           instructions[0x33] = Inc.new(cpu: self, operand: :sp)
           instructions[0x34] = Inc.new(cpu: self, operand: :mem_hl)
@@ -278,6 +283,8 @@ module Akane
           instructions[0xF5] = Push.new(cpu: self, reg16: :af)
           instructions[0xF6] = Or.new(cpu: self, source: :imm8)
           instructions[0xF7] = Rst.new(cpu: self, vector: 0x30)
+          instructions[0xF8] = Ld16.new(cpu: self, target: :hl, source: :sp_plus_sig8)
+          instructions[0xF9] = Ld16.new(cpu: self, target: :sp, source: :hl)
 
           instructions[0xFB] = Ei.new(cpu: self)
           instructions[0xFC] = nil # not implemented in the Game Boy
