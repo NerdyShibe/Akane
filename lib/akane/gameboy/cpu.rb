@@ -19,6 +19,7 @@ module Akane
         @registers = Registers.new
         @ime = false
         @ime_scheduled = false
+        @halted = false
         @opcode = nil
         @instruction = nil
 
@@ -132,6 +133,10 @@ module Akane
 
       def enable_interrupts
         @ime_scheduled = true
+      end
+
+      def halt
+        @halted = true
       end
 
       # Emulates CPU internal processing which advance cycles without Bus access.
