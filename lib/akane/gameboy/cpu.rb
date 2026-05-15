@@ -38,10 +38,25 @@ module Akane
         handle_interrupts if @ime && @interrupts.any_pending?
 
         old_pc = @registers.pc
+        old_cycles = @m_cycles
         @opcode = fetch_next_byte
         decode_instruction
         execute_instruction
-        log(old_pc, @instruction)
+        log(old_pc, old_cycles, @instruction)
+      end
+
+      # Reads a byte from the Bus at a given address.
+      def bus_read(address:)
+        byte = @bus.read_byte(address:)
+        advance_cycles(4)
+
+        byte
+      end
+
+      # Requests a Bus write at a given address with a given value.
+      def bus_write(address:, value:)
+        @bus.write_byte(address:, value:)
+        advance_cycles(4)
       end
 
       # Fetches the next immediate byte from memory pointed to by the Program Counter.
@@ -64,18 +79,22 @@ module Akane
         (msb << 8) | lsb
       end
 
-      # Reads a byte from the Bus at a given address.
-      def bus_read(address:)
-        byte = @bus.read_byte(address)
-        advance_cycles(4)
-
-        byte
+      # Pushes a 16-bit value into the Stack.
+      def stack_push(value:)
+        @registers.sp -= 1
+        bus_write(address: @registers.sp, value: (value >> 8) & 0xFF)
+        @registers.sp -= 1
+        bus_write(address: @registers.sp, value: value & 0xFF)
       end
 
-      # Requests a Bus write at a given address with a given value.
-      def bus_write(address:, value:)
-        @bus.write_byte(address, value)
-        advance_cycles(4)
+      # Pops a 16-bit value from the Stack.
+      def stack_pop
+        lsb = bus_read(address: @registers.sp)
+        @registers.sp += 1
+        msb = bus_read(address: @registers.sp)
+        @registers.sp += 1
+
+        (msb << 8) | lsb
       end
 
       # Jumps execution to a given address by setting the address value into the PC.
@@ -115,6 +134,11 @@ module Akane
         @ime_scheduled = true
       end
 
+      # Emulates CPU internal processing which advance cycles without Bus access.
+      def internal_processing
+        advance_cycles(4)
+      end
+
       private
 
       # Checks if any interrupt is enabled and requested to service.
@@ -134,36 +158,30 @@ module Akane
         @instruction.execute
       end
 
-      # Emulates CPU internal processing which advance cycles without Bus access.
-      def internal_processing
-        advance_cycles(4)
-      end
-
       # Syncs all components after each M-cycle.
       def advance_cycles(t_cycles)
         @m_cycles += 1
         @advance_components.call(t_cycles)
       end
 
-      def log(old_pc, instruction)
+      def log(old_pc, old_cycles, instruction)
         return unless @verbose
 
         $stdout.printf(
-          '%<cycles>04d | $%<pc>04X | %<im>-12s (took %<ic>d) (%<ib>d) | $%<b1>02X $%<b2>02X $%<b3>02X | ' \
+          '%<cycles>04d | $%<pc>04X | %<im>-14s (took %<ic>d) | $%<b1>02X $%<b2>02X $%<b3>02X | ' \
           "AF: $%<af>04X BC: $%<bc>04X DE: $%<de>04X HL: $%<hl>04X | [HL]: $%<mem_hl>02X\n",
           cycles: @m_cycles,
           pc: old_pc,
           im: instruction.mnemonic,
-          ic: instruction.m_cycles,
-          ib: instruction.bytes,
-          b1: @bus.read_byte(old_pc),
-          b2: @bus.read_byte(old_pc + 1),
-          b3: @bus.read_byte(old_pc + 2),
+          ic: @m_cycles - old_cycles,
+          b1: @bus.read_byte(address: old_pc),
+          b2: @bus.read_byte(address: old_pc + 1),
+          b3: @bus.read_byte(address: old_pc + 2),
           af: @registers.af,
           bc: @registers.bc,
           de: @registers.de,
           hl: @registers.hl,
-          mem_hl: @bus.read_byte(@registers.hl)
+          mem_hl: @bus.read_byte(address: @registers.hl)
         )
       end
 
