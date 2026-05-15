@@ -10,12 +10,12 @@ module Akane
             super(cpu:)
 
             @mnemonic = "JP #{format_operand(condition)}, #{format_operand(location)}"
-            @logic    = build_logic(location)
+            @logic    = build_logic(location, condition)
           end
 
           private
 
-          def build_logic(location)
+          def build_logic(location, condition)
             if condition.nil?
               case location
               when :imm16 then -> { @cpu.jump_to(address: @cpu.fetch_next_word) }

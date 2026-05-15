@@ -10,7 +10,7 @@ module Akane
           def initialize(cpu:, condition: nil, enable_ime: false)
             super(cpu:)
 
-            @mnemonic = enable_ime ? 'RETI' : "RET #{format_operand(condition)}".trim
+            @mnemonic = enable_ime ? 'RETI' : "RET #{format_operand(condition)}".strip
             @logic    = build_logic(condition, enable_ime)
           end
 
