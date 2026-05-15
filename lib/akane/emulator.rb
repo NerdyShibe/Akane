@@ -31,7 +31,7 @@ module Akane
       cpu = Gameboy::Cpu.new(bus, interrupts, advance_components, verbose)
 
       Kernel.loop do
-        cpu.run
+        cpu.step
       end
     end
 

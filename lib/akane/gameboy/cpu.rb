@@ -34,7 +34,7 @@ module Akane
       # - Fetches the current Opcode at the Program Counter.
       # - Decodes which instruction based on the Opcode fetched.
       # - Executes the instruction.
-      def run
+      def step
         handle_interrupts if @ime && @interrupts.any_pending?
 
         old_pc = @registers.pc
