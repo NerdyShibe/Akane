@@ -37,13 +37,14 @@ module Akane
           # M-cycle 1: Fetches the instruction opcode.
           # M-cycle 2: 16-bit add operation + flag logic + set result.
           def add16(reg16_value)
+            hl_value = @registers.hl
             result = @cpu.add16(@registers.hl, reg16_value)
 
             @registers.n_flag = false
-            @registers.h_flag = (@registers.hl & 0x0FFF) + (reg16_value & 0x0FFF) > 0x0FFF
+            @registers.h_flag = (hl_value & 0x0FFF) + (reg16_value & 0x0FFF) > 0x0FFF
             @registers.c_flag = result > 0xFFFF
 
-            @registers.a = result
+            @registers.hl = result
           end
 
           # M-cycle 1: Fetches the instruction opcode.
@@ -58,8 +59,8 @@ module Akane
             result = @cpu.add16(@registers.sp, offset)
 
             @registers.clear_flags
-            @registers.h_flag = (sp & 0x0F) + (offset & 0x0F) > 0x0FFF
-            @registers.c_flag = (sp & 0xFF) + offset > 0xFF
+            @registers.h_flag = (sp & 0x0F) + (unsigned_byte & 0x0F) > 0x0F
+            @registers.c_flag = (sp & 0xFF) + (unsigned_byte & 0xFF) > 0xFF
 
             @registers.sp = result
           end

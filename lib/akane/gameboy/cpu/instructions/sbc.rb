@@ -50,8 +50,8 @@ module Akane
 
             @registers.z_flag = result.nobits?(0xFF)
             @registers.n_flag = true
-            @registers.h_flag = (acc & 0x0F) < (value & 0x0F) + carry_in
-            @registers.c_flag = acc < value + carry_in
+            @registers.h_flag = (acc & 0x0F) < ((value & 0x0F) + carry_in)
+            @registers.c_flag = acc < (value + carry_in)
 
             @registers.a = result
           end

@@ -19,7 +19,7 @@ module Akane
             return -> { ld_mem_imm16_sp } if target == :mem_imm16
 
             case target
-            when :bc then -> { @registers.hl = @cpu.fetch_next_word }
+            when :bc then -> { @registers.bc = @cpu.fetch_next_word }
             when :de then -> { @registers.de = @cpu.fetch_next_word }
             when :hl
               case source
