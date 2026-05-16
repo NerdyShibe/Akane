@@ -36,29 +36,37 @@ module Akane
       # - Decodes which instruction based on the Opcode fetched.
       # - Executes the instruction.
       def step
-        if @halted
-          advance_cycles(4)
+        if @interrupts.any_pending?
+          @halted = false if @halted
 
-          @halted = false if @interrupts.any_pending?
-
-          if @ime_scheduled
-            @ime = true
-            @ime_scheduled = false
+          if @ime
+            handle_interrupts
+            return
           end
-        else
-          old_pc = @registers.pc
-          old_cycles = @m_cycles
-          @opcode = fetch_next_byte
-          decode_instruction
-          execute_instruction
-          log(old_pc, old_cycles, @instruction)
         end
+
+        if @ime_scheduled
+          @ime = true
+          @ime_scheduled = false
+        end
+
+        if @halted
+          advance_cycle
+          return
+        end
+
+        old_pc = @registers.pc
+        old_cycles = @m_cycles
+        @opcode = fetch_next_byte
+        decode_instruction
+        execute_instruction
+        log(old_pc, old_cycles, @instruction)
       end
 
       # Reads a byte from the Bus at a given address.
       def bus_read(address:)
         byte = @bus.read_byte(address:)
-        advance_cycles(4)
+        advance_cycle
 
         byte
       end
@@ -66,7 +74,7 @@ module Akane
       # Requests a Bus write at a given address with a given value.
       def bus_write(address:, value:)
         @bus.write_byte(address:, value:)
-        advance_cycles(4)
+        advance_cycle
       end
 
       # Fetches the next immediate byte from memory pointed to by the Program Counter.
@@ -150,14 +158,21 @@ module Akane
 
       # Emulates CPU internal processing which advance cycles without Bus access.
       def internal_processing
-        advance_cycles(4)
+        advance_cycle
       end
 
       private
 
-      # Checks if any interrupt is enabled and requested to service.
+      # Is only called if IME and any interrupt is pending.
+      # Takes 5 cycles to complete.
       def handle_interrupts
-        #
+        advance_cycle
+        advance_cycle
+        @ime = false
+        stack_push(value: @registers.pc)
+        address_vector = @interrupts.priority_vector
+        @interrupts.priority_service
+        jump_to(address: address_vector)
       end
 
       # Determines which instruction should be executed for each Opcode.
@@ -178,9 +193,9 @@ module Akane
       end
 
       # Syncs all components after each M-cycle.
-      def advance_cycles(t_cycles)
+      def advance_cycle
         @m_cycles += 1
-        @advance_components.call(t_cycles)
+        @advance_components.call
       end
 
       def log(old_pc, old_cycles, instruction)

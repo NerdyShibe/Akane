@@ -87,6 +87,14 @@ module Akane
         @if &= clear_mask
       end
 
+      def priority_service
+        service(highest_pending)
+      end
+
+      def priority_vector
+        VECTORS[highest_pending]
+      end
+
       private
 
       # Checks if a given interrupt is requested and enabled at the same time.
