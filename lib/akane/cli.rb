@@ -10,7 +10,7 @@ module Akane
         verbose: false,
         debug: false,
         profile: nil,
-        cycles: nil,
+        iterations: nil,
         audio: nil,
         video: nil
       }
@@ -30,8 +30,8 @@ module Akane
           options[:profile] = mode.to_sym
         end
 
-        parser.on('-c', '--cycles=n', Integer, 'Enable Stackprof profiling') do |n|
-          options[:cycles] = n
+        parser.on('-i', '--iterations=n', Integer, 'How many iterations to step the Cpu') do |n|
+          options[:iterations] = n
         end
 
         parser.on('-a', '--audio=AUDIO', 'Define the audio backend') do |audio|
