@@ -7,8 +7,9 @@ module Akane
 
     def self.start(options)
       @cycles = 0
+      @stop_cycles = options[:cycles] if options[:cycles]
 
-      start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      @start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
       cartridge = Cartridge.load_rom(options[:rom_path])
       wram = Gameboy::Ram.new(8192)
@@ -35,7 +36,13 @@ module Akane
 
       cpu = Gameboy::Cpu.new(bus, interrupts, -> { advance_components }, options[:verbose])
 
-      if options[:iterations]
+      @steps = 0
+      if options[:steps]
+        while @steps < options[:steps]
+          cpu.step
+          @steps += 1
+        end
+      elsif options[:iterations]
         i = 0
         while i < options[:iterations]
           cpu.step
@@ -47,21 +54,30 @@ module Akane
         end
       end
 
-      elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
-      frames = @cycles.to_f / 17_556
-      fps = frames / elapsed
+      @elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - @start
 
-      puts "#{@cycles} cycles in #{elapsed.round(2)}s"
-      puts "#{fps.round(1)} FPS (Target: 59.7)"
-      puts "#{(fps / 59.7).round(2)}x real-time Game Boy"
+      stop
     end
 
     def self.advance_components
+      @elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - @start
+      stop if @cycles == @stop_cycles
+
       @timer.tick
       @ppu.tick
       @apu.tick
 
       @cycles += 1
+    end
+
+    def self.stop
+      frames = @cycles.to_f / 17_556
+      fps = frames / @elapsed
+
+      puts "#{@cycles} cycles in #{@elapsed.round(2)}s"
+      puts "#{fps.round(2)} FPS (Target: 59.73)"
+      puts "#{(fps / 59.73).round(2)}x real-time Game Boy"
+      exit
     end
   end
 end

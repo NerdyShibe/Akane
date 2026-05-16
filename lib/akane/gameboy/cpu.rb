@@ -194,8 +194,8 @@ module Akane
         return unless @verbose
 
         $stdout.printf(
-          '%<cycles>04d | $%<pc>04X | %<im>-14s (took %<ic>d) | ' \
-          '$%<b1>02X $%<b2>02X $%<b3>02X | F: %<f>08b | ' \
+          '%<cycles>04d | PC: $%<pc>04X | %<im>-14s (took %<ic>d) | ' \
+          '$%<b1>02X $%<b2>02X $%<b3>02X | F: %<f>04b | ' \
           "A: $%<a>02X BC: $%<bc>04X DE: $%<de>04X HL: $%<hl>04X | [HL]: $%<mem_hl>02X\n",
           cycles: @m_cycles,
           pc: old_pc,
@@ -204,7 +204,7 @@ module Akane
           b1: @bus.read_byte(address: old_pc),
           b2: @bus.read_byte(address: old_pc + 1),
           b3: @bus.read_byte(address: old_pc + 2),
-          f: @registers.f,
+          f: @registers.f >> 4,
           a: @registers.a,
           bc: @registers.bc,
           de: @registers.de,

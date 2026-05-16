@@ -2,8 +2,6 @@
 
 require_relative '../lib/akane'
 
-
-
 options = Akane::CLI.parse(ARGV)
 
 if options[:profile]

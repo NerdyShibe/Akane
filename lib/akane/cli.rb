@@ -11,12 +11,22 @@ module Akane
         debug: false,
         profile: nil,
         iterations: nil,
+        steps: nil,
+        cycles: nil,
         audio: nil,
         video: nil
       }
 
       opt_parser = OptionParser.new do |parser|
         parser.banner = 'Usage: akane [options] ROM_PATH'
+
+        parser.on('-c', '--cycles=n', Integer, 'Amount of dots to tick') do |n|
+          options[:cycles] = n
+        end
+
+        parser.on('-s', '--steps=n', Integer, 'Amount of CPU steps to run') do |n|
+          options[:steps] = n
+        end
 
         parser.on('-d', '--debug', 'Enable debug mode') do
           options[:debug] = true
