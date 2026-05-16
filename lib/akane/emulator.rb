@@ -9,6 +9,7 @@ module Akane
       @cycles = 0
       @steps = 0
       @stop_cycles = options[:cycles] if options[:cycles]
+      @stop_steps = options[:steps] if options[:steps]
 
       @start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
@@ -18,7 +19,8 @@ module Akane
       @apu = Gameboy::Apu.new
       interrupts = Gameboy::Interrupts.new
 
-      @ppu = Gameboy::Ppu.new(interrupts)
+      trace_ppu = options[:trace].include?('ppu')
+      @ppu = Gameboy::Ppu.new(interrupts, trace_ppu)
       @timer = Gameboy::Timer.new(interrupts)
       serial = Gameboy::Serial.new(interrupts, options[:debug])
       joypad = Gameboy::Joypad.new(interrupts)
@@ -38,24 +40,14 @@ module Akane
       trace_cpu = options[:trace].include?('cpu')
       cpu = Gameboy::Cpu.new(bus, interrupts, -> { advance_components }, trace_cpu)
 
-      if options[:steps]
-        while @steps < options[:steps]
-          cpu.step
-          @steps += 1
-        end
-      else
-        Kernel.loop do
-          cpu.step
-        end
+      Kernel.loop do
+        stop if @steps == @stop_steps
+        cpu.step
+        @steps += 1
       end
-
-      @elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - @start
-
-      stop
     end
 
     def self.advance_components
-      @elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - @start
       stop if @cycles == @stop_cycles
 
       @timer.tick
@@ -66,6 +58,8 @@ module Akane
     end
 
     def self.stop
+      @elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - @start
+
       frames = @cycles.to_f / 17_556
       fps = frames / @elapsed
 

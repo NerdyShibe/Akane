@@ -108,8 +108,14 @@ module Akane
         when 0xFF41 then @ppu.stat
         when 0xFF42 then @ppu.scy
         when 0xFF43 then @ppu.scx
-        when 0xFF44
-          @ppu.ly += 1
+        when 0xFF44 then @ppu.ly
+        when 0xFF45 then @ppu.lyc
+        when 0xFF46 then @ppu.dma
+        when 0xFF47 then @ppu.bgp
+        when 0xFF48 then @ppu.obp0
+        when 0xFF49 then @ppu.obp1
+        when 0xFF4A then @ppu.wy
+        when 0xFF4B then @ppu.wx
         else
           0xFF
         end
@@ -126,7 +132,18 @@ module Akane
         when 0xFF06 then @timer.tma = value
         when 0xFF07 then @timer.tac = value
         when 0xFF0F then @interrupts.if_register = value
+        when 0xFF40 then @ppu.lcdc = value
+        when 0xFF41 then @ppu.stat = value
+        when 0xFF42 then @ppu.scy = value
+        when 0xFF43 then @ppu.scx = value
         when 0xFF44 then @ppu.ly = value
+        when 0xFF45 then @ppu.lyc = value
+        when 0xFF46 then @ppu.dma = value
+        when 0xFF47 then @ppu.bgp = value
+        when 0xFF48 then @ppu.obp0 = value
+        when 0xFF49 then @ppu.obp1 = value
+        when 0xFF4A then @ppu.wy = value
+        when 0xFF4B then @ppu.wx = value
         end
       end
     end

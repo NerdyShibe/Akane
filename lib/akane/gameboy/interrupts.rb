@@ -6,7 +6,7 @@ module Akane
     class Interrupts
       # Interrupt types sorted by highest to lowest priority.
       TYPES = {
-        vblank: 0,
+        v_blank: 0,
         lcd: 1,
         timer: 2,
         serial: 3,

@@ -115,26 +115,26 @@ describe Akane::Gameboy::Interrupts do
   end
 
   describe '#highest_pending' do
-    context 'when :vblank is highest' do
-      it 'returns :vblank when all 5 interrupt bits are set' do
+    context 'when :v_blank is highest' do
+      it 'returns :v_blank when all 5 interrupt bits are set' do
         interrupts.if_register = 0b00011111
         interrupts.ie_register = 0b00011111
 
-        expect(interrupts.highest_pending).to eq(:vblank)
+        expect(interrupts.highest_pending).to eq(:v_blank)
       end
 
-      it 'returns :vblank when all bits are set on IF but only Bit 0 in IE' do
+      it 'returns :v_blank when all bits are set on IF but only Bit 0 in IE' do
         interrupts.if_register = 0b00011111
         interrupts.ie_register = 0b00000001
 
-        expect(interrupts.highest_pending).to eq(:vblank)
+        expect(interrupts.highest_pending).to eq(:v_blank)
       end
 
-      it 'returns :vblank when all bits are set on IE but only Bit 0 in IF' do
+      it 'returns :v_blank when all bits are set on IE but only Bit 0 in IF' do
         interrupts.if_register = 0b00000001
         interrupts.ie_register = 0b00011111
 
-        expect(interrupts.highest_pending).to eq(:vblank)
+        expect(interrupts.highest_pending).to eq(:v_blank)
       end
     end
 
@@ -262,17 +262,17 @@ describe Akane::Gameboy::Interrupts do
   end
 
   describe '#request' do
-    context 'when :vblank is requested' do
-      it 'sets Bit 0 of the IF register when requesting :vblank interrupt' do
+    context 'when :v_blank is requested' do
+      it 'sets Bit 0 of the IF register when requesting :v_blank interrupt' do
         interrupts.if_register = 0b11100000
-        interrupts.request(:vblank)
+        interrupts.request(:v_blank)
 
         expect(interrupts.if_register).to eq(0b11100001)
       end
 
       it 'keeps other Bits state if they were already set' do
         interrupts.if_register = 0b11111110
-        interrupts.request(:vblank)
+        interrupts.request(:v_blank)
 
         expect(interrupts.if_register).to eq(0b11111111)
       end
@@ -344,17 +344,17 @@ describe Akane::Gameboy::Interrupts do
   end
 
   describe '#service' do
-    context 'when :vblank is serviced' do
-      it 'clears Bit 0 of the IF register when servicing :vblank interrupt' do
+    context 'when :v_blank is serviced' do
+      it 'clears Bit 0 of the IF register when servicing :v_blank interrupt' do
         interrupts.if_register = 0b11111111
-        interrupts.service(:vblank)
+        interrupts.service(:v_blank)
 
         expect(interrupts.if_register).to eq(0b11111110)
       end
 
       it 'keeps other Bits state if they were already cleared' do
         interrupts.if_register = 0b11100001
-        interrupts.service(:vblank)
+        interrupts.service(:v_blank)
 
         expect(interrupts.if_register).to eq(0b11100000)
       end

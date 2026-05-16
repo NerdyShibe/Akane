@@ -25,15 +25,17 @@ module Akane
 
       DOTS_PER_SCANLINE = 456
 
-      attr_reader :lcdc, :stat, :scy, :scx
-      attr_accessor :ly
+      attr_writer :stat
+      attr_accessor :lcdc, :scy, :scx, :ly, :lyc, :dma, :bgp, :obp0, :obp1, :wy, :wx
 
-      def initialize(interrupts)
+      def initialize(interrupts, trace_ppu)
         @interrupts = interrupts
+        @trace_ppu = trace_ppu
 
         @vram = Ram.new(8192)
         @oam  = Ram.new(160)
-        @mode = MODES[:h_blank]
+        @mode = MODES[:oam_search]
+        @dots = 0
 
         @lcdc = 0x00
         @stat = 0x00
@@ -41,14 +43,27 @@ module Akane
         @scx  = 0x00
         @ly   = 0x00
         @lyc  = 0x00
+        @dma  = 0x00
+        @bgp  = 0x00
+        @obp0 = 0x00
+        @obp1 = 0x00
+        @wy   = 0x00
+        @wx   = 0x00
+      end
 
-        @wy = 0x00
-        @wx = 0x00
+      # Reports current mode (2 bits).
+      def stat
+        @mode
       end
 
       # Returns a 8-bit value stored in VRAM in a given offset.
+      #
+      # VRAM data:
+      # $8000-$97FF: Tile data (up to 384 tiles × 16 bytes each)
+      # $9800-$9BFF: Tile map 0 (32×32 = 1024 tile indices)
+      # $9C00-$9FFF: Tile map 1 (alternative map)
       def read_vram(offset)
-        return 0xFF unless @mode == MODES[:vblank]
+        return 0xFF unless @mode == MODES[:v_blank]
 
         @vram.read_byte(offset)
       end
@@ -69,7 +84,36 @@ module Akane
       end
 
       def tick
-        # l
+        @dots = (@dots + 4) % 456
+        @ly = (@ly + 1) % 154 if @dots.zero?
+
+        if @ly >= 144
+          @mode = MODES[:v_blank]
+          @interrupts.request(:v_blank)
+        else
+          if @dots <= 79
+            @mode = MODES[:oam_search]
+          elsif @dots <= 251
+            @mode = MODES[:drawing]
+          elsif @dots <= 455
+            @mode = MODES[:h_blank]
+          end
+        end
+
+        trace
+      end
+
+      private
+
+      def trace
+        return unless @trace_ppu
+
+        $stdout.printf(
+          "Dots: %<dots>04d | Mode: %<mode>s | LY: $%<ly>02X (%<ly>d)\n",
+          dots: @dots,
+          mode: MODES.key(@mode).upcase,
+          ly: @ly
+        )
       end
     end
   end
