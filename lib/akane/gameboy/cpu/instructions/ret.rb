@@ -22,10 +22,10 @@ module Akane
             return -> { ret }  if condition.nil?
 
             case condition
-            when :nz then -> { ret(@registers.z_flag.zero?) }
-            when :z  then -> { ret(@registers.z_flag == 1) }
-            when :nc then -> { ret(@registers.c_flag.zero?) }
-            when :c  then -> { ret(@registers.c_flag == 1) }
+            when :nz then -> { ret(condition: @registers.z_flag.zero?) }
+            when :z  then -> { ret(condition: @registers.z_flag == 1) }
+            when :nc then -> { ret(condition: @registers.c_flag.zero?) }
+            when :c  then -> { ret(condition: @registers.c_flag == 1) }
             end
           end
 

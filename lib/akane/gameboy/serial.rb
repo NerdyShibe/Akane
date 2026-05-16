@@ -81,7 +81,7 @@ module Akane
       # - Requests a :serial interrupt.
       def complete_transfer
         @sc &= 0b01111111
-        $stdout.print(@message_buffer.pack('C*'))
+        puts @message_buffer.pack('C*')
         @interrupts.request(:serial)
       end
     end
