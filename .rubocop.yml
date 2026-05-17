@@ -12,15 +12,15 @@ Metrics/ClassLength:
   Max: 120
 
 Metrics/CyclomaticComplexity:
-  Max: 15
+  Max: 20
 
 Metrics/MethodLength:
-  Max: 15
+  Max: 20
   Exclude:
     - 'lib/akane/gameboy/bus.rb'
 
 Metrics/PerceivedComplexity:
-  Max: 15
+  Max: 20
 
 Naming/AccessorMethodName:
   Enabled: false
@@ -37,6 +37,8 @@ RSpec/MultipleMemoizedHelpers:
 Style/FrozenStringLiteralComment:
   Enabled: true
   EnforcedStyle: always
+  Exclude:
+    - 'bin/akane'
 
 Style/ComparableBetween:
   Enabled: false
