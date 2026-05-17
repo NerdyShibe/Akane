@@ -41,25 +41,25 @@ module Akane
         if address <= 0x7FFF
           @cartridge.read_rom(address)
         elsif address <= 0x9FFF
-          @ppu.read_vram(address - 0x8000)
+          @ppu.read_vram(address:)
         elsif address <= 0xBFFF
-          @cartridge.read_ram(address - 0xA000)
+          @cartridge.read_ram(address)
         elsif address <= 0xDFFF
-          @wram.read_byte(address - 0xC000)
+          @wram.read_byte(address:)
         elsif address <= 0xFDFF
-          @wram.read_byte(address - 0xE000)
+          @wram.read_byte(address: address - 0x2000)
         elsif address <= 0xFE9F
-          @ppu.read_oam(address - 0xFE00)
+          @ppu.read_oam(address:)
         elsif address <= 0xFEFF
           0xFF
         elsif address <= 0xFF7F
           read_io(address)
         elsif address <= 0xFFFE
-          @hram.read_byte(address - 0xFF80)
+          @hram.read_byte(address:)
         elsif address == 0xFFFF
           @interrupts.ie_register
         else
-          raise 'MemoryOutOfBounds error'
+          raise "Not implemented bus read at $#{address.to_s(16)}"
         end
       end
 
@@ -69,25 +69,25 @@ module Akane
         if address <= 0x7FFF
           @cartridge.write_rom(address, value)
         elsif address <= 0x9FFF
-          @ppu.write_vram(address - 0x8000, value)
+          @ppu.write_vram(address:, value:)
         elsif address <= 0xBFFF
           @cartridge.write_ram(address - 0xA000, value)
         elsif address <= 0xDFFF
-          @wram.write_byte(address - 0xC000, value)
+          @wram.write_byte(address:, value:)
         elsif address <= 0xFDFF
-          @wram.write_byte(address - 0xE000, value)
+          @wram.write_byte(address: address - 0x2000, value:)
         elsif address <= 0xFE9F
-          @ppu.write_oam(address - 0xFE00, value)
+          @ppu.write_oam(address:, value:)
         elsif address <= 0xFEFF
           nil
         elsif address <= 0xFF7F
           write_io(address, value)
         elsif address <= 0xFFFE
-          @hram.write_byte(address - 0xFF80, value)
+          @hram.write_byte(address:, value:)
         elsif address == 0xFFFF
           @interrupts.ie_register = value
         else
-          raise 'MemoryOutOfBounds error'
+          raise "Not implemented bus write at $#{address.to_s(16)}"
         end
       end
 

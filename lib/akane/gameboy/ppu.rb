@@ -16,7 +16,7 @@ module Akane
     # - Dots per frame = 154 * 456 = 70_224 t-cycles (17_556 m-cycles).
     # - OAM search takes 80 dots (20 m-cycles) -> 40 sprites, 2 dots each.
     class Ppu
-      using Utils::BitOperations
+      include Utils::BitOps
 
       MODES = {
         h_blank: 0,
@@ -28,20 +28,19 @@ module Akane
       DOTS_PER_OAM_SCAN = 80
       DOTS_PER_SCANLINE = 456
 
-      VRAM_OFFSET = 0x8000
       WINDOW_TILE_MAPS = {
-        0 => { start: 0x9800 - VRAM_OFFSET, end: 0x9BFF - VRAM_OFFSET },
-        1 => { start: 0x9C00 - VRAM_OFFSET, end: 0x9FFF - VRAM_OFFSET }
+        0 => { start: 0x9800, end: 0x9BFF },
+        1 => { start: 0x9C00, end: 0x9FFF }
       }.freeze
       BG_TILE_MAPS = {
-        0 => { start: 0x9800 - VRAM_OFFSET, end: 0x9BFF - VRAM_OFFSET },
-        1 => { start: 0x9C00 - VRAM_OFFSET, end: 0x9FFF - VRAM_OFFSET }
+        0 => { start: 0x9800, end: 0x9BFF },
+        1 => { start: 0x9C00, end: 0x9FFF }
       }.freeze
 
-      # CONSOLE_CHARS = [' ', '░', '▒', '█'].freeze
-      CONSOLE_CHARS = [' ', ':', '#', '@'].freeze
+      CONSOLE_CHARS = [' ', '░', '▒', '█'].freeze
+      # CONSOLE_CHARS = [' ', ':', '#', '@'].freeze
 
-      attr_reader :lcdc, :stat, :scy, :scx, :ly, :lyc, :dma, :bgp, :obp0, :obp1, :wy, :wx
+      attr_reader :lcdc, :scy, :scx, :ly, :lyc, :dma, :bgp, :obp0, :obp1, :wy, :wx
 
       def initialize(interrupts, trace_ppu)
         @interrupts = interrupts
@@ -77,11 +76,11 @@ module Akane
       end
 
       def stat
-        if @ly == @lyc
-          @stat = @stat.set_bit(2)
-        else
-          @stat = @stat.clear_bit(2)
-        end
+        @stat = if @ly == @lyc
+                  set_bit(@stat, 2)
+                else
+                  clear_bit(@stat, 2)
+                end
         @stat | @mode
       end
 
@@ -93,8 +92,20 @@ module Akane
         @scx = value & 0xFF
       end
 
+      def lyc=(value)
+        @lyc = value & 0xFF
+      end
+
       def bgp=(value)
         @bgp = value & 0xFF
+      end
+
+      def obp0=(value)
+        @obp0 = value & 0xFF
+      end
+
+      def obp1=(value)
+        @obp1 = value & 0xFF
       end
 
       def wy=(value)
@@ -105,33 +116,33 @@ module Akane
         @wx = value & 0xFF
       end
 
-      # Returns a 8-bit value stored in VRAM in a given offset.
+      # Returns a 8-bit value stored in VRAM in a given address.
       #
       # VRAM data:
       # $8000-$97FF: Tile data (up to 384 tiles × 16 bytes each)
       # $9800-$9BFF: Tile map 0 (32×32 = 1024 tile indices)
       # $9C00-$9FFF: Tile map 1 (alternative map)
-      def read_vram(offset)
+      def read_vram(address:)
         return 0xFF if @mode == MODES[:drawing]
 
-        @vram.read_byte(offset)
+        @vram.read_byte(address:)
       end
 
-      # Stores a 8-bit value in VRAM in a given offset.
-      def write_vram(offset, value)
-        @vram.write_byte(offset, value)
+      # Stores a 8-bit value in VRAM in a given address.
+      def write_vram(address:, value:)
+        @vram.write_byte(address:, value:)
       end
 
-      # Returns a 8-bit value stored in OAM in a given offset.
-      def read_oam(offset)
+      # Returns a 8-bit value stored in OAM in a given address.
+      def read_oam(address:)
         return 0xFF if [MODES[:oam_scan], MODES[:drawing]].include?(@mode)
 
-        @oam.read_byte(offset)
+        @oam.read_byte(address:)
       end
 
-      # Stores a 8-bit value in OAM in a given offset.
-      def write_oam(offset, value)
-        @oam.write_byte(offset, value)
+      # Stores a 8-bit value in OAM in a given address.
+      def write_oam(address:, value:)
+        @oam.write_byte(address:, value:)
       end
 
       def tick
@@ -156,16 +167,16 @@ module Akane
         elsif @dots >= DOTS_PER_SCANLINE # -> Scanline completed.
           @dots = 0
           @ly = (@ly + 1) % 154
-          @interrupts.request(:lcd) if @ly == @lyc && @stat.bit(6) == 1
+          @interrupts.request(:lcd) if @ly == @lyc && bit(@stat, 6) == 1
           @scanline_drawn = false
           @framebuffer << "\n"
 
           if @ly == 144 # -> Frame completed
             @mode = MODES[:v_blank]
             @interrupts.request(:v_blank)
-            # @framebuffer << "\e[H"
+            @framebuffer << "\e[H"
             puts @framebuffer.join
-            @framebuffer = []
+            @framebuffer = Array.new
           end
         end
 
@@ -197,23 +208,23 @@ module Akane
 
         (0..19).each do |tile_pos|
           tile_index_address = tile_map_base_address + ((map_tile_x + tile_pos) % 32) + ((map_tile_y % 32) * 32)
-          tile_index = @vram.read_byte(tile_index_address)
+          tile_index = @vram.read_byte(address: tile_index_address)
 
           row_in_tile_data = (@ly + @scy) % 8
 
           if addressing_mode == 1
             tile_data_address = 0x8000 + (tile_index * 16) + (row_in_tile_data * 2)
           else
-            signed_index = (tile_index >= 128) ? tile_index - 256 : tile_index
+            signed_index = tile_index >= 128 ? tile_index - 256 : tile_index
             tile_data_address = 0x9000 + (signed_index * 16) + (row_in_tile_data * 2)
           end
 
-          byte1 = @vram.read_byte(tile_data_address - VRAM_OFFSET)
-          byte2 = @vram.read_byte(tile_data_address - VRAM_OFFSET + 1)
+          byte1 = @vram.read_byte(address: tile_data_address)
+          byte2 = @vram.read_byte(address: tile_data_address + 1)
 
           bit_pos = 7
           while bit_pos >= 0
-            pixel_color_index = (byte2.bit(bit_pos) << 1) | byte1.bit(bit_pos)
+            pixel_color_index = (bit(byte2, bit_pos) << 1) | bit(byte1, bit_pos)
             pixel_shade = shade(pixel_color_index)
             @framebuffer << CONSOLE_CHARS[pixel_shade]
             bit_pos -= 1
@@ -232,19 +243,19 @@ module Akane
       end
 
       def lcd_on?
-        @lcdc.bit(7) == 1
+        bit(@lcdc, 7) == 1
       end
 
       def lcd_off?
-        @lcdc.bit(7).zero?
+        bit(@lcdc, 7).zero?
       end
 
       def window_tile_map
-        WINDOW_TILE_MAPS[@lcdc.bit(6)]
+        WINDOW_TILE_MAPS[bit(@lcdc, 6)]
       end
 
       def bg_tile_map
-        BG_TILE_MAPS[@lcdc.bit(3)]
+        BG_TILE_MAPS[bit(@lcdc, 3)]
       end
 
       # Tile data addressing mode.
@@ -252,7 +263,7 @@ module Akane
       # - LCDC Bit 4 is 1 -> Base address = $8000 (Unsigned byte).
       # - LCDC Bit 4 is 0 -> Base address = $9000 (Sign byte offset).
       def addressing_mode
-        @lcdc.bit(4)
+        bit(@lcdc, 4)
       end
 
       def trace
