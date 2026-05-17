@@ -23,7 +23,7 @@ module Akane
       attr_reader wy: Integer
       attr_reader wx: Integer
 
-      def initialize: (Interrupts interrupts, bool trace_ppu) -> void
+      def initialize: (Interrupts interrupts, bool ?trace_ppu, bool ?debug_mode) -> void
 
       def stat: () -> Integer
 
@@ -47,7 +47,7 @@ module Akane
       private
 
       def draw_scanline: () -> void
-      def shade: (Integer color_index) -> void
+      def shade: (Integer color_index) -> Integer
       def lcd_on?: () -> bool
       def lcd_off?: () -> bool
       def window_tile_map: () -> Hash[Symbol, Integer]

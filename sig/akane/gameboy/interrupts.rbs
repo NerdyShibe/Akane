@@ -1,8 +1,10 @@
 module Akane
   module Gameboy
     class Interrupts
-      TYPES: Hash[Symbol, Integer]
-      VECTORS: Hash[Symbol, Integer]
+      type interrupt_types = :v_blank | :lcd_stat | :timer | :serial | :joypad
+
+      TYPES: Hash[interrupt_types, Integer]
+      VECTORS: Hash[interrupt_types, Integer]
 
       def initialize: (?skip_boot_rom: bool) -> void
 
@@ -12,15 +14,15 @@ module Akane
       def ie_register=: (Integer value) -> void
 
       def any_pending?: () -> bool
-      def highest_pending: () -> Symbol?
-      def request: (Symbol type) -> void
-      def service: (Symbol type) -> void
-      def priority_vector: () -> void
+      def highest_pending: () -> interrupt_types
+      def request: (interrupt_types value) -> void
+      def service: (interrupt_types value) -> void
+      def priority_vector: () -> Integer
       def priority_service: () -> void
 
       private
 
-      def pending?: (Symbol type) -> bool
+      def pending?: (interrupt_types value) -> bool
     end
   end
 end

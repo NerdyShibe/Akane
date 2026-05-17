@@ -12,7 +12,7 @@ module Akane
           private
 
           def build_logic: (Symbol target) -> Proc
-          def rrc_reg8: (Symbol reg8) -> void
+          def rrc_reg8: (Integer reg8_value) -> void
           def rrc_mem_hl: () -> void
         end
       end

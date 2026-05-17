@@ -6,6 +6,7 @@ module Akane
   # Handles arguments parsing when launching the emulator.
   class CLI
     def self.parse(arguments)
+      # @type var options: emulator_options
       options = {
         audio: nil,
         cycles: nil,
@@ -13,7 +14,8 @@ module Akane
         profile: nil,
         steps: nil,
         trace: nil,
-        video: nil
+        video: nil,
+        rom_path: nil
       }
 
       opt_parser = OptionParser.new do |parser|
@@ -50,6 +52,8 @@ module Akane
 
       opt_parser.parse!(arguments)
       options[:rom_path] = arguments.first
+      raise ArgumentError, 'ROM_PATH must be provided' unless options[:rom_path]
+
       options
     end
   end

@@ -29,7 +29,7 @@ module Akane
             return '[C]'   if operand == :mem_c
             return '[a8]'  if operand == :mem_unsig8
 
-            operand.upcase
+            operand.to_s.upcase
           end
         end
       end

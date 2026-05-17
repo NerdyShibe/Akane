@@ -1,5 +1,16 @@
 module Akane
   class CLI
-    def self.run: (Array[String] arguments) -> void
+    type emulator_options = {
+      audio: String?,
+      cycles: Integer?,
+      debug: bool,
+      profile: Symbol?,
+      steps: Integer?,
+      trace: Array[String]?,
+      video: String?,
+      rom_path: String
+    }
+
+    def self.parse: (Array[String] arguments) -> emulator_options
   end
 end

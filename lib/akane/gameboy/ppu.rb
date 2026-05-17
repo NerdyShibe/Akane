@@ -42,9 +42,10 @@ module Akane
 
       attr_reader :lcdc, :scy, :scx, :ly, :lyc, :dma, :bgp, :obp0, :obp1, :wy, :wx
 
-      def initialize(interrupts, trace_ppu)
+      def initialize(interrupts, trace_ppu, debug_mode)
         @interrupts = interrupts
         @trace_ppu = trace_ppu
+        @debug_mode = debug_mode
 
         @vram = Ram.new(size: 8192, offset: 0x8000)
         @oam  = Ram.new(size: 160, offset: 0xFE00)
@@ -167,7 +168,7 @@ module Akane
         elsif @dots >= DOTS_PER_SCANLINE # -> Scanline completed.
           @dots = 0
           @ly = (@ly + 1) % 154
-          @interrupts.request(:lcd) if @ly == @lyc && bit(@stat, 6) == 1
+          @interrupts.request(:lcd_stat) if @ly == @lyc && bit(@stat, 6) == 1
           @scanline_drawn = false
           @framebuffer << "\n"
 
@@ -175,7 +176,7 @@ module Akane
             @mode = MODES[:v_blank]
             @interrupts.request(:v_blank)
             @framebuffer << "\e[H"
-            puts @framebuffer.join
+            puts @framebuffer.join if @debug_mode
             @framebuffer = Array.new
           end
         end
@@ -272,7 +273,7 @@ module Akane
         $stdout.printf(
           "Dots: %<dots>04d | Mode: %<mode>s | LY: $%<ly>02X (%<ly>d)\n",
           dots: @dots,
-          mode: MODES.key(@mode).upcase,
+          mode: MODES.key(@mode)&.to_s&.upcase,
           ly: @ly
         )
       end

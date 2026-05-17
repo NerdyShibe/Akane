@@ -2,7 +2,7 @@ module Akane
   class Cartridge
     def self.load_rom: (String file_path) -> Cartridge
 
-    def initialize: (rom: Akane::Cartridge::Rom, ?mbc: nil, ?ram: nil) -> void
+    def initialize: (rom: Rom, ?mbc: nil, ?ram: nil) -> void
 
     def read_rom: (Integer offset) -> Integer
     def write_rom: (Integer offset, Integer value) -> void

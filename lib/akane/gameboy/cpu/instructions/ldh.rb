@@ -25,6 +25,8 @@ module Akane
               case source
               when :mem_unsig8 then -> { ldh_a_mem_unsig8 }
               when :mem_c then -> { ldh_a_mem_c }
+              else
+                raise ArgumentError, 'Unknown Ldh source for :a target'
               end
             when :mem_unsig8 then -> { ldh_mem_unsig8_a }
             when :mem_c then -> { ldh_mem_c_a }

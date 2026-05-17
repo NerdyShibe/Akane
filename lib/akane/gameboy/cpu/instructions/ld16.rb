@@ -37,6 +37,8 @@ module Akane
 
                   @registers.hl = result
                 end
+              else
+                raise ArgumentError, 'Unknown Ld16 source for LD HL'
               end
             when :sp
               case source
@@ -46,6 +48,8 @@ module Akane
                   @cpu.internal_processing
                   @registers.sp = @registers.hl
                 end
+              else
+                raise ArgumentError, 'Unknown Ld16 source for LD SP'
               end
             else
               raise ArgumentError, 'Unknown Ld16 target'

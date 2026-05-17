@@ -7,7 +7,7 @@ module Akane
       # Interrupt types sorted by highest to lowest priority.
       TYPES = {
         v_blank: 0,
-        lcd: 1,
+        lcd_stat: 1,
         timer: 2,
         serial: 3,
         joypad: 4
@@ -15,8 +15,8 @@ module Akane
 
       # Address vectors to jump to for each interrupt type.
       VECTORS = {
-        vblank: 0x0040,
-        lcd: 0x0048,
+        v_blank: 0x0040,
+        lcd_stat: 0x0048,
         timer: 0x0050,
         serial: 0x0058,
         joypad: 0x0060
@@ -72,7 +72,7 @@ module Akane
           return type if pending?(type)
         end
 
-        nil
+        raise ArgumentError, 'No interrupts found for highest pending'
       end
 
       # Sets the correct Bit in the IF register based on the interrupt type.

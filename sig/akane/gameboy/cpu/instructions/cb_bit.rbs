@@ -12,7 +12,7 @@ module Akane
           private
 
           def build_logic: (Integer bit_pos, Symbol target) -> Proc
-          def bit_test: (Integer bit, Symbol target) -> void
+          def bit_test: (Integer bit, Integer target_value) -> void
         end
       end
     end

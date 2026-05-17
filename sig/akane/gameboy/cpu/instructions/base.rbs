@@ -12,7 +12,7 @@ module Akane
 
           private
 
-          def format_operand: (Symbol operand) -> String
+          def format_operand: (Symbol ?operand) -> String
         end
       end
     end
