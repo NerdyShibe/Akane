@@ -24,8 +24,8 @@ describe Akane::Gameboy::Bus do
   let(:cartridge) { Akane::Cartridge.new(rom: Akane::Cartridge::Rom.new(rom_data)) }
   let(:ppu) { Akane::Gameboy::Ppu.new(interrupts) }
   let(:apu) { Akane::Gameboy::Apu.new }
-  let(:wram) { Akane::Gameboy::Ram.new(8_192) }
-  let(:hram) { Akane::Gameboy::Ram.new(127) }
+  let(:wram) { Akane::Gameboy::Ram.new(size: 8192, offset: 0x8000) }
+  let(:hram) { Akane::Gameboy::Ram.new(size: 127, offset: 0xFF80) }
   let(:interrupts) { Akane::Gameboy::Interrupts.new(skip_boot_rom: false) }
   let(:timer) { Akane::Gameboy::Timer.new(interrupts) }
   let(:serial) { Akane::Gameboy::Serial.new(interrupts) }

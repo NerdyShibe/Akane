@@ -2,45 +2,39 @@
 
 module Akane
   module Gameboy
-    # Models the RAM chip within the Game Boy
+    # Models the RAM chip within the Game Boy.
     class Ram
-      # Memory size in bytes
+      # Memory size in bytes.
       attr_reader :size
 
-      # Creates a new Ram object given a size in bytes
+      # Creates a new Ram object.
       #
-      # - Holds an instance variable for a possible data backup, starts blank.
-      def initialize(size)
+      # @param size [Integer] Memory size in bytes.
+      # @param offset [Integer] Address offset based on the Bus memory map.
+      def initialize(size:, offset:)
         @size = size
+        @offset = offset
+
         @data = Array.new(size, 0x00)
-        @backup = Array.new
+        @backup = nil
         @backed_up = false
       end
 
       # Returns a 8-bit value from a given address in memory.
-      #
-      # - If the given address is not accessible, returns 0xFF.
-      def read_byte(offset)
-        return 0xFF unless in_bounds?(offset)
-
-        @data[offset]
+      def read_byte(address:)
+        @data[address - @offset]
       end
 
       # Stores a 8-bit value into a given address in memory.
-      #
-      # - Ignores addresses out of bounds.
-      # - Wraps all values around 0xFF.
-      def write_byte(offset, value)
-        return unless in_bounds?(offset)
-
-        @data[offset] = value & 0xFF
+      def write_byte(address:, value:)
+        @data[address - @offset] = value & 0xFF
       end
 
       # Provides an interface to read backup data.
-      def read_backup(offset)
-        return 0xFF unless @backed_up && in_bounds?(offset)
+      def read_backup(address:)
+        return 0xFF unless @backed_up
 
-        @backup[offset]
+        @backup[address - @offset]
       end
 
       # Returns a readable string in B or KiB based on memory size.
@@ -70,13 +64,6 @@ module Akane
       def wipe_backup
         @backup = Array.new
         @backed_up = false
-      end
-
-      private
-
-      # Returns a bool value indicating if the given address is within memory bounds.
-      def in_bounds?(offset)
-        offset >= 0 && offset <= @size - 1
       end
     end
   end

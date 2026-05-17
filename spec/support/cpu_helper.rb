@@ -5,8 +5,8 @@ module CpuHelper
   def build_cpu(rom_data)
     rom = Akane::Cartridge::Rom.new(rom_data)
     cartridge = Akane::Cartridge.new(rom: rom)
-    wram = Akane::Gameboy::Ram.new(8192)
-    hram = Akane::Gameboy::Ram.new(127)
+    wram = Akane::Gameboy::Ram.new(size: 8192, offset: 0x8000)
+    hram = Akane::Gameboy::Ram.new(size: 127, offset: 0xFF80)
     apu = Akane::Gameboy::Apu.new
     interrupts = Akane::Gameboy::Interrupts.new
 

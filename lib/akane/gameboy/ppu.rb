@@ -38,7 +38,8 @@ module Akane
         1 => { start: 0x9C00 - VRAM_OFFSET, end: 0x9FFF - VRAM_OFFSET }
       }.freeze
 
-      CONSOLE_CHARS = [' ', '░', '▒', '█'].freeze
+      # CONSOLE_CHARS = [' ', '░', '▒', '█'].freeze
+      CONSOLE_CHARS = [' ', ':', '#', '@'].freeze
 
       attr_reader :lcdc, :stat, :scy, :scx, :ly, :lyc, :dma, :bgp, :obp0, :obp1, :wy, :wx
 
@@ -46,8 +47,8 @@ module Akane
         @interrupts = interrupts
         @trace_ppu = trace_ppu
 
-        @vram = Ram.new(8192)
-        @oam  = Ram.new(160)
+        @vram = Ram.new(size: 8192, offset: 0x8000)
+        @oam  = Ram.new(size: 160, offset: 0xFE00)
         @mode = MODES[:oam_scan]
         @dots = 0
         @framebuffer = Array.new
@@ -162,7 +163,7 @@ module Akane
           if @ly == 144 # -> Frame completed
             @mode = MODES[:v_blank]
             @interrupts.request(:v_blank)
-            @framebuffer << "\e[H"
+            # @framebuffer << "\e[H"
             puts @framebuffer.join
             @framebuffer = []
           end

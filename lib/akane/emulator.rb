@@ -14,8 +14,8 @@ module Akane
       @start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
       cartridge = Cartridge.load_rom(options[:rom_path])
-      wram = Gameboy::Ram.new(8192)
-      hram = Gameboy::Ram.new(127)
+      wram = Gameboy::Ram.new(size: 8192, offset: 0xC000)
+      hram = Gameboy::Ram.new(size: 127, offset: 0xFF80)
       @apu = Gameboy::Apu.new
       interrupts = Gameboy::Interrupts.new
 
