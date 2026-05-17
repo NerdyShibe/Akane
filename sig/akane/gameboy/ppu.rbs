@@ -1,13 +1,57 @@
 module Akane
   module Gameboy
     class Ppu
-      def initialize: (Interrupts interrupts) -> void
+      MODES: Hash[Symbol, Integer]
+      DOTS_PER_OAM_SCAN: Integer
+      DOTS_PER_SCANLINE: Integer
+      WINDOW_TILE_MAPS: Hash[Symbol, Hash[Symbol, Integer]]
+      BG_TILE_MAPS: Hash[Symbol, Hash[Symbol, Integer]]
 
-      def read_vram: (Integer offset) -> Integer
-      def write_vram: (Integer offset, Integer value) -> void
-      def read_oam: (Integer offset) -> Integer
-      def write_oam: (Integer offset, Integer value) -> void
+      CONSOLE_CHARS: Array[String]
+
+      attr_reader lcdc: Integer
+      attr_reader scy: Integer
+      attr_reader scx: Integer
+      attr_reader ly: Integer
+      attr_reader lyc: Integer
+      attr_reader dma: Integer
+      attr_reader bgp: Integer
+      attr_reader obp0: Integer
+      attr_reader obp1: Integer
+      attr_reader wy: Integer
+      attr_reader wx: Integer
+
+      def initialize: (Interrupts interrupts, bool trace_ppu) -> void
+
+      def stat: () -> Integer
+
+      def lcdc=: (Integer value) -> void
+      def stat=: (Integer value) -> void
+      def scy=: (Integer value) -> void
+      def scx=: (Integer value) -> void
+      def lyc=: (Integer value) -> void
+      def bgp=: (Integer value) -> void
+      def obp0=: (Integer value) -> void
+      def obp1=: (Integer value) -> void
+      def wy=: (Integer value) -> void
+      def wx=: (Integer value) -> void
+
+      def read_vram: (address: Integer) -> Integer
+      def write_vram: (address: Integer, value: Integer) -> void
+      def read_oam: (address: Integer) -> Integer
+      def write_oam: (address: Integer, value: Integer) -> void
       def tick: () -> void
+
+      private
+
+      def draw_scanline: () -> void
+      def shade: (Integer color_index) -> void
+      def lcd_on?: () -> bool
+      def lcd_off?: () -> bool
+      def window_tile_map: () -> Hash[Symbol, Integer]
+      def bg_tile_map: () -> Hash[Symbol, Integer]
+      def addressing_mode: () -> Integer
+      def trace: () -> void
     end
   end
 end

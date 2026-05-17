@@ -1,5 +1,9 @@
 module Akane
   class Emulator
+    CYCLES_PER_FRAME: Integer
+
     def self.start: (String file_path) -> void
+    def self.advance_components: () -> void
+    def self.stop: () -> void
   end
 end

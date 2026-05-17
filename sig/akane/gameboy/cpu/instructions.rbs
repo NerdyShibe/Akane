@@ -1,0 +1,12 @@
+# frozen_string_literal: true
+
+module Akane
+  module Gameboy
+    class Cpu
+      module Instructions : Cpu
+        def load_base_instructions: () -> void
+        def load_cb_instructions: () -> void
+      end
+    end
+  end
+end

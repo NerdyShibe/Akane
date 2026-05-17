@@ -46,6 +46,8 @@ module Akane
         def n_flag=: (Integer bit) -> Integer
         def h_flag=: (Integer bit) -> Integer
         def c_flag=: (Integer bit) -> Integer
+
+        def clear_flags: () -> void
       end
     end
   end
