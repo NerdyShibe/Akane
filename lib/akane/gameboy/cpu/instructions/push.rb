@@ -23,6 +23,8 @@ module Akane
             when :de then -> { push(@registers.de) }
             when :hl then -> { push(@registers.hl) }
             when :af then -> { push(@registers.af) }
+            else
+              raise ArgumentError, 'Unknown Push reg16'
             end
           end
 

@@ -40,6 +40,8 @@ module Akane
                 result = set_bit(@cpu.bus_read(address: @registers.hl), bit_pos)
                 @cpu.bus_write(address: @registers.hl, value: result)
               end
+            else
+              raise ArgumentError, 'Unknown CbSet target'
             end
           end
         end

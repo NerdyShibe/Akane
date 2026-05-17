@@ -47,6 +47,8 @@ module Akane
                   @registers.sp = @registers.hl
                 end
               end
+            else
+              raise ArgumentError, 'Unknown Ld16 target'
             end
           end
 

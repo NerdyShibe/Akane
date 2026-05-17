@@ -20,6 +20,8 @@ module Akane
               case location
               when :imm16 then -> { @cpu.jump_to(address: @cpu.fetch_next_word) }
               when :hl then -> { @registers.pc = @registers.hl } # No extra cycle
+              else
+                raise ArgumentError, 'Unknown Jp location'
               end
             else
               case condition
@@ -27,6 +29,8 @@ module Akane
               when :nc then -> { jp(condition: @registers.c_flag.zero?) }
               when :z  then -> { jp(condition: @registers.z_flag == 1) }
               when :c  then -> { jp(condition: @registers.c_flag == 1) }
+              else
+                raise ArgumentError, 'Unknown Jp condition'
               end
             end
           end

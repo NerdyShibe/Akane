@@ -34,6 +34,8 @@ module Akane
             when :l      then -> { add_a(@registers.l) }
             when :mem_hl then -> { add_a(@cpu.bus_read(address: @registers.hl)) }
             when :imm8   then -> { add_a(@cpu.fetch_next_byte) }
+            else
+              raise ArgumentError, 'Unknown Add8 source'
             end
           end
 

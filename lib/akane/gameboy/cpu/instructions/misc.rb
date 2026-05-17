@@ -20,6 +20,8 @@ module Akane
             when :cpl then -> { cpl }
             when :scf then -> { scf }
             when :ccf then -> { ccf }
+            else
+              raise ArgumentError, 'Unknown Misc operation'
             end
           end
 

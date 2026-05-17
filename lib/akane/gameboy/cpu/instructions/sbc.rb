@@ -34,6 +34,8 @@ module Akane
             when :l      then -> { sbc_a(@registers.l) }
             when :mem_hl then -> { sbc_a(@cpu.bus_read(address: @registers.hl)) }
             when :imm8   then -> { sbc_a(@cpu.fetch_next_byte) }
+            else
+              raise ArgumentError, 'Unknown Sbc source'
             end
           end
 

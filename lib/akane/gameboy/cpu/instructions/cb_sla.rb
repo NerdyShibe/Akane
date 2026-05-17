@@ -30,6 +30,8 @@ module Akane
             when :l      then -> { @registers.l = sla_reg8(@registers.l) }
             when :mem_hl then -> { sla_mem_hl }
             when :a      then -> { @registers.a = sla_reg8(@registers.a) }
+            else
+              raise ArgumentError, 'Unknown CbSla target'
             end
           end
 

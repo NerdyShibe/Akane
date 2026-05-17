@@ -32,7 +32,7 @@ module Akane
             when :hl     then -> { add16(@registers.hl) }
             when :sp     then -> { add16(@registers.sp) }
             else
-              -> { raise 'Not implemented Add16' }
+              raise ArgumentError, 'Unknown Add16 source'
             end
           end
 

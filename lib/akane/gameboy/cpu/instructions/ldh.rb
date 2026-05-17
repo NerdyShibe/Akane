@@ -28,6 +28,8 @@ module Akane
               end
             when :mem_unsig8 then -> { ldh_mem_unsig8_a }
             when :mem_c then -> { ldh_mem_c_a }
+            else
+              raise ArgumentError, 'Unknown Ldh target'
             end
           end
 

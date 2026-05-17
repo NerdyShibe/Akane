@@ -33,6 +33,8 @@ module Akane
                 value_at_mem_hl = @cpu.bus_read(address: @registers.hl)
                 @cpu.bus_write(address: @registers.hl, value: inc(value_at_mem_hl))
               end
+            else
+              raise ArgumentError, 'Unknown Inc operand'
             end
           end
 

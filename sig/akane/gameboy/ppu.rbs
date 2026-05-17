@@ -6,8 +6,8 @@ module Akane
       MODES: Hash[Symbol, Integer]
       DOTS_PER_OAM_SCAN: Integer
       DOTS_PER_SCANLINE: Integer
-      WINDOW_TILE_MAPS: Hash[Symbol, Hash[Symbol, Integer]]
-      BG_TILE_MAPS: Hash[Symbol, Hash[Symbol, Integer]]
+      WINDOW_TILE_MAPS: Hash[Integer, Hash[Symbol, Integer]]
+      BG_TILE_MAPS: Hash[Integer, Hash[Symbol, Integer]]
 
       CONSOLE_CHARS: Array[String]
 

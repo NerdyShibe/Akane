@@ -40,7 +40,8 @@ module Akane
             when :l      then -> { xor_a(@registers.l) }
             when :mem_hl then -> { xor_a(@cpu.bus_read(address: @registers.hl)) }
             when :imm8   then -> { xor_a(@cpu.fetch_next_byte) }
-            else -> { raise 'Not implemented XOR operation' }
+            else
+              raise ArgumentError, 'Unknown Xor source'
             end
           end
 

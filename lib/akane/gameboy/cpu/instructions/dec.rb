@@ -33,6 +33,8 @@ module Akane
                 value_at_mem_hl = @cpu.bus_read(address: @registers.hl)
                 @cpu.bus_write(address: @registers.hl, value: dec(value_at_mem_hl))
               }
+            else
+              raise ArgumentError, 'Unknown Dec operand'
             end
           end
 

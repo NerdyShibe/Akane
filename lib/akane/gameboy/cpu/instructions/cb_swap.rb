@@ -30,6 +30,8 @@ module Akane
             when :l      then -> { @registers.l = swap(@registers.l) }
             when :mem_hl then -> { swap_mem_hl }
             when :a      then -> { @registers.a = swap(@registers.a) }
+            else
+              raise ArgumentError, 'Unknown CbSwap target'
             end
           end
 

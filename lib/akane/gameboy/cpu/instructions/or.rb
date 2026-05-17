@@ -34,6 +34,8 @@ module Akane
             when :l      then -> { or_a(@registers.l) }
             when :mem_hl then -> { or_a(@cpu.bus_read(address: @registers.hl)) }
             when :imm8   then -> { or_a(@cpu.fetch_next_byte) }
+            else
+              raise ArgumentError, 'Unknown Or source'
             end
           end
 

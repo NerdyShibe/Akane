@@ -26,6 +26,8 @@ module Akane
             when :z  then -> { ret_cc(condition: @registers.z_flag == 1) }
             when :nc then -> { ret_cc(condition: @registers.c_flag.zero?) }
             when :c  then -> { ret_cc(condition: @registers.c_flag == 1) }
+            else
+              raise ArgumentError, 'Unknown Ret condition'
             end
           end
 

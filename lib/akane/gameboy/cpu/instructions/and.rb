@@ -34,6 +34,8 @@ module Akane
             when :l      then -> { and_a(@registers.l) }
             when :mem_hl then -> { and_a(@cpu.bus_read(address: @registers.hl)) }
             when :imm8   then -> { and_a(@cpu.fetch_next_byte) }
+            else
+              raise ArgumentError, 'Unknown And source'
             end
           end
 

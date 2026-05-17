@@ -30,6 +30,8 @@ module Akane
             when :l      then -> { @registers.l = rlc_reg8(@registers.l) }
             when :mem_hl then -> { rlc_mem_hl }
             when :a      then -> { @registers.a = rlc_reg8(@registers.a) }
+            else
+              raise ArgumentError, 'Unknown CbRlc target'
             end
           end
 

@@ -17,7 +17,7 @@ module Akane
           def load_e: (Symbol source) -> Proc
           def load_h: (Symbol source) -> Proc
           def load_l: (Symbol source) -> Proc
-          def load_mem_hl: (Integer value) -> Proc
+          def load_mem_hl: (Symbol source) -> Proc
           def load_mem_hli: () -> void
           def load_mem_hld: () -> void
           def ld_mem_imm16_a: () -> void

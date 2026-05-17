@@ -34,6 +34,8 @@ module Akane
             when :l      then -> { cp_a(@registers.l) }
             when :mem_hl then -> { cp_a(@cpu.bus_read(address: @registers.hl)) }
             when :imm8   then -> { cp_a(@cpu.fetch_next_byte) }
+            else
+              raise ArgumentError, 'Unknown Cp source'
             end
           end
 

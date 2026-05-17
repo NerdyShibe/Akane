@@ -29,6 +29,8 @@ module Akane
             when :rrca then -> { rrca }
             when :rla  then -> { rla }
             when :rra  then -> { rra }
+            else
+              raise ArgumentError, 'Unknown Rotate operation'
             end
           end
 

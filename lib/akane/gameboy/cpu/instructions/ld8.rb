@@ -34,6 +34,8 @@ module Akane
             when :mem_bc  then -> { @cpu.bus_write(address: @registers.bc, value: @registers.a) }
             when :mem_de  then -> { @cpu.bus_write(address: @registers.de, value: @registers.a) }
             when :mem_imm16 then -> { ld_mem_imm16_a }
+            else
+              raise ArgumentError, 'Unknown target for :build_logic in Ld8'
             end
           end
 
@@ -58,6 +60,8 @@ module Akane
                 @registers.a = @cpu.bus_read(address: @registers.hl)
                 @registers.hl -= 1
               end
+            else
+              raise ArgumentError, 'Unknown source for :load_a in Ld8'
             end
           end
 
@@ -72,6 +76,8 @@ module Akane
             when :l      then -> { @registers.b = @registers.l }
             when :imm8   then -> { @registers.b = @cpu.fetch_next_byte }
             when :mem_hl then -> { @registers.b = @cpu.bus_read(address: @registers.hl) }
+            else
+              raise ArgumentError, 'Unknown source for :load_b in Ld8'
             end
           end
 
@@ -86,6 +92,8 @@ module Akane
             when :l      then -> { @registers.c = @registers.l }
             when :imm8   then -> { @registers.c = @cpu.fetch_next_byte }
             when :mem_hl then -> { @registers.c = @cpu.bus_read(address: @registers.hl) }
+            else
+              raise ArgumentError, 'Unknown source for :load_c in Ld8'
             end
           end
 
@@ -100,6 +108,8 @@ module Akane
             when :l      then -> { @registers.d = @registers.l }
             when :imm8   then -> { @registers.d = @cpu.fetch_next_byte }
             when :mem_hl then -> { @registers.d = @cpu.bus_read(address: @registers.hl) }
+            else
+              raise ArgumentError, 'Unknown source for :load_d in Ld8'
             end
           end
 
@@ -114,6 +124,8 @@ module Akane
             when :l      then -> { @registers.e = @registers.l }
             when :imm8   then -> { @registers.e = @cpu.fetch_next_byte }
             when :mem_hl then -> { @registers.e = @cpu.bus_read(address: @registers.hl) }
+            else
+              raise ArgumentError, 'Unknown source for :load_e in Ld8'
             end
           end
 
@@ -128,6 +140,8 @@ module Akane
             when :l      then -> { @registers.h = @registers.l }
             when :imm8   then -> { @registers.h = @cpu.fetch_next_byte }
             when :mem_hl then -> { @registers.h = @cpu.bus_read(address: @registers.hl) }
+            else
+              raise ArgumentError, 'Unknown source for :load_h in Ld8'
             end
           end
 
@@ -142,6 +156,8 @@ module Akane
             when :l      then -> {}
             when :imm8   then -> { @registers.l = @cpu.fetch_next_byte }
             when :mem_hl then -> { @registers.l = @cpu.bus_read(address: @registers.hl) }
+            else
+              raise ArgumentError, 'Unknown source for :load_l in Ld8'
             end
           end
 
@@ -155,6 +171,8 @@ module Akane
             when :h    then -> { @cpu.bus_write(address: @registers.hl, value: @registers.h) }
             when :l    then -> { @cpu.bus_write(address: @registers.hl, value: @registers.l) }
             when :imm8 then -> { @cpu.bus_write(address: @registers.hl, value: @cpu.fetch_next_byte) }
+            else
+              raise ArgumentError, 'Unknown source for :load_mem_hl in Ld8'
             end
           end
 

@@ -28,6 +28,8 @@ module Akane
             when :de then -> { @registers.de = @cpu.stack_pop }
             when :hl then -> { @registers.hl = @cpu.stack_pop }
             when :af then -> { @registers.af = @cpu.stack_pop }
+            else
+              raise ArgumentError, 'Unknown Pop reg16'
             end
           end
         end

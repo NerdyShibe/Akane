@@ -27,6 +27,8 @@ module Akane
             when :l      then -> { bit_test(bit_pos, @registers.l) }
             when :mem_hl then -> { bit_test(bit_pos, @cpu.bus_read(address: @registers.hl)) }
             when :a      then -> { bit_test(bit_pos, @registers.a) }
+            else
+              raise ArgumentError, 'Unknown CbBit target'
             end
           end
 

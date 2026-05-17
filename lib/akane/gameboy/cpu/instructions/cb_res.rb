@@ -38,6 +38,8 @@ module Akane
                 result = clear_bit(value_at_mem_hl, bit_pos)
                 @cpu.bus_write(address: @registers.hl, value: result)
               end
+            else
+              raise ArgumentError, 'Unknown CbRes target'
             end
           end
         end

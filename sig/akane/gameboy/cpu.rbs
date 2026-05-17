@@ -12,8 +12,8 @@ module Akane
 
       def bus_read: (address: Integer) -> Integer
       def bus_write: (address: Integer, value: Integer) -> void
-      def fetch_next_byte: () -> void
-      def fetch_next_word: () -> void
+      def fetch_next_byte: () -> Integer
+      def fetch_next_word: () -> Integer
 
       def sign_value: (Integer byte) -> Integer
       def add16: (Integer value1, Integer value2) -> Integer

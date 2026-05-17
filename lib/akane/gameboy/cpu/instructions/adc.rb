@@ -35,7 +35,7 @@ module Akane
             when :mem_hl then -> { adc_a(@cpu.bus_read(address: @registers.hl)) }
             when :imm8   then -> { adc_a(@cpu.fetch_next_byte) }
             else
-              -> { puts 'Not implemented source' }
+              raise ArgumentError, 'Unknown Adc source'
             end
           end
 
