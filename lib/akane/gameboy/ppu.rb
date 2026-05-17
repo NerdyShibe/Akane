@@ -21,11 +21,11 @@ module Akane
       MODES = {
         h_blank: 0,
         v_blank: 1,
-        drawing: 2,
-        oam_search: 3
+        oam_scan: 2,
+        drawing: 3
       }.freeze
 
-      DOTS_PER_OAM_SEARCH = 80
+      DOTS_PER_OAM_SCAN = 80
       DOTS_PER_SCANLINE = 456
 
       VRAM_OFFSET = 0x8000
@@ -48,9 +48,10 @@ module Akane
 
         @vram = Ram.new(8192)
         @oam  = Ram.new(160)
-        @mode = MODES[:oam_search]
+        @mode = MODES[:oam_scan]
         @dots = 0
-        @pixel_buffer = Array.new
+        @framebuffer = Array.new
+        @scanline_drawn = false
 
         @lcdc = 0x00
         @stat = 0x00
@@ -118,7 +119,7 @@ module Akane
 
       # Returns a 8-bit value stored in OAM in a given offset.
       def read_oam(offset)
-        return 0xFF if [MODES[:oam_search], MODES[:drawing]].include?(@mode)
+        return 0xFF if [MODES[:oam_scan], MODES[:drawing]].include?(@mode)
 
         @oam.read_byte(offset)
       end
@@ -139,14 +140,15 @@ module Akane
         @dots += 4
 
         # Core state machine.
-        if @dots < DOTS_PER_OAM_SEARCH && @ly < 144
-          @mode = MODES[:oam_search]
+        if @dots < DOTS_PER_OAM_SCAN && @ly < 144
+          @mode = MODES[:oam_scan]
         elsif @dots < 252 && @ly < 144
           @mode = MODES[:drawing]
-          draw_scanline
+          draw_scanline unless @scanline_drawn
+          @scanline_drawn = true
         elsif @dots < DOTS_PER_SCANLINE && @ly < 144
           @mode = MODES[:h_blank]
-        elsif @dots >= DOTS_PER_SCANLINE
+        elsif @dots >= DOTS_PER_SCANLINE # -> Scanline completed.
           @dots = 0
           @ly = (@ly + 1) % 154
 
@@ -155,6 +157,7 @@ module Akane
             @interrupts.request(:v_blank)
             puts @pixel_buffer.join
             @pixel_buffer = []
+            @scanline_drawn = false
           end
         end
 
@@ -176,14 +179,23 @@ module Akane
       # byte1 => 1 1 1 1 1 1 1 1
       # byte2 => 1 1 1 1 1 1 1 1
       def draw_scanline
-        check_addressing_mode
-        base_address = bg_tile_map[:start]
-        (0..20).each do |tile_pos|
-          tile_index_address = base_address + tile_pos
+        tile_map_base_address = bg_tile_map[:start]
+
+        # Loops through 20 tiles (20 * 8 px = 160px = width of the scanline)
+        (0..19).each do |tile_pos|
+          # Tile map is a grid of 32 x 32 tiles.
+          # You need a x and y coordinate to get the tile index.
+          # Each entry in the grid is a single byte with the tile index.
+          map_tile_x = @scx / 8
+          map_tile_y = (@ly + @scy) / 8
+
+          tile_index_address = tile_map_base_address + ((map_tile_x + tile_pos) % 32) + ((map_tile_y % 32) * 32)
           tile_index = @vram.read_byte(tile_index_address)
 
           check_addressing_mode
-          tile_data_address = @base_pointer + (tile_index * 16)
+          row_in_tile_data = (@ly + @scy) % 8
+          tile_data_address = @tile_data_base_pointer + (tile_index * 16) + (row_in_tile_data * 2)
+
           byte1 = @vram.read_byte(tile_data_address)
           byte2 = @vram.read_byte(tile_data_address + 1)
 
@@ -213,11 +225,11 @@ module Akane
       end
 
       def check_addressing_mode
-        @base_pointer = if @lcdc.bit(4) == 1
-                          0x8000 - VRAM_OFFSET
-                        else
-                          0x9000 - VRAM_OFFSET
-                        end
+        @tile_data_base_pointer = if @lcdc.bit(4) == 1
+                                    0x8000 - VRAM_OFFSET
+                                  else
+                                    0x9000 - VRAM_OFFSET
+                                  end
       end
 
       def trace
