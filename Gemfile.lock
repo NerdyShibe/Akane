@@ -165,6 +165,7 @@ PLATFORMS
 DEPENDENCIES
   benchmark-ips
   debug
+  ffi
   memory_profiler
   pastel
   rake
