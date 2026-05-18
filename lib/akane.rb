@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'akane/hal/sdl2/bindings'
+require_relative 'akane/hal/sdl2'
 require_relative 'akane/version'
 require_relative 'akane/cli'
 require_relative 'akane/emulator'

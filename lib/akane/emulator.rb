@@ -19,7 +19,9 @@ module Akane
       @apu = Gameboy::Apu.new
       interrupts = Gameboy::Interrupts.new
 
+      display = HAL::SDL2.new
       @ppu = Gameboy::Ppu.new(
+        display,
         interrupts,
         trace_ppu: options[:trace]&.include?('ppu'),
         debug_mode: options[:debug]

@@ -42,7 +42,8 @@ module Akane
 
       attr_reader :lcdc, :scy, :scx, :ly, :lyc, :dma, :bgp, :obp0, :obp1, :wy, :wx
 
-      def initialize(interrupts, trace_ppu: false, debug_mode: false)
+      def initialize(display, interrupts, trace_ppu: false, debug_mode: false)
+        @display = display
         @interrupts = interrupts
         @trace_ppu = trace_ppu
         @debug_mode = debug_mode
@@ -170,13 +171,14 @@ module Akane
           @ly = (@ly + 1) % 154
           @interrupts.request(:lcd_stat) if @ly == @lyc && bit(@stat, 6) == 1
           @scanline_drawn = false
-          @framebuffer << "\n"
+          # @framebuffer << "\n"
 
           if @ly == 144 # -> Frame completed
             @mode = MODES[:v_blank]
             @interrupts.request(:v_blank)
-            @framebuffer << "\e[H"
-            puts @framebuffer.join if @debug_mode
+            # @framebuffer << "\e[H"
+            # puts @framebuffer.join if @debug_mode
+            @display.draw(@framebuffer)
             @framebuffer = Array.new
           end
         end
@@ -227,7 +229,8 @@ module Akane
           while bit_pos >= 0
             pixel_color_index = (bit(byte2, bit_pos) << 1) | bit(byte1, bit_pos)
             pixel_shade = shade(pixel_color_index)
-            @framebuffer << CONSOLE_CHARS[pixel_shade]
+            # @framebuffer << CONSOLE_CHARS[pixel_shade]
+            @framebuffer << pixel_shade
             bit_pos -= 1
           end
         end
