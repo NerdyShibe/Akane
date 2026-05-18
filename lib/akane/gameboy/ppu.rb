@@ -25,6 +25,8 @@ module Akane
         drawing: 3
       }.freeze
 
+      OAM_SCAN = OAMScan.new.freeze
+
       DOTS_PER_OAM_SCAN = 80
       DOTS_PER_SCANLINE = 456
 
@@ -54,6 +56,8 @@ module Akane
         @dots = 0
         @framebuffer = Array.new
         @scanline_drawn = false
+
+        # print "\e[?1049h" if @debug_mode
 
         @lcdc = 0x00
         @stat = 0x00
@@ -96,6 +100,10 @@ module Akane
 
       def lyc=(value)
         @lyc = value & 0xFF
+      end
+
+      def dma=(value)
+        @dma = value & 0xFF
       end
 
       def bgp=(value)
@@ -177,7 +185,7 @@ module Akane
             @mode = MODES[:v_blank]
             @interrupts.request(:v_blank)
             # @framebuffer << "\e[H"
-            # puts @framebuffer.join if @debug_mode
+            # print @framebuffer.join if @debug_mode
             @display.draw(@framebuffer)
             @framebuffer = Array.new
           end
