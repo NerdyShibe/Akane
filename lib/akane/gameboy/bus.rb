@@ -22,7 +22,8 @@ module Akane
         apu:,
         timer:,
         serial:,
-        joypad:
+        joypad:,
+        dma:
       )
         @cartridge = cartridge
         @ppu = ppu
@@ -33,6 +34,8 @@ module Akane
         @timer = timer
         @serial = serial
         @joypad = joypad
+
+        @dma = dma
       end
 
       # Delegates the read to the proper component based on the address
@@ -138,7 +141,7 @@ module Akane
         when 0xFF43 then @ppu.scx = value
         when 0xFF44 then nil # @ppu.ly = value -> read-only
         when 0xFF45 then @ppu.lyc = value
-        when 0xFF46 then @ppu.dma = value
+        when 0xFF46 then @dma.start_transfer(bus: self, source_value: value)
         when 0xFF47 then @ppu.bgp = value
         when 0xFF48 then @ppu.obp0 = value
         when 0xFF49 then @ppu.obp1 = value

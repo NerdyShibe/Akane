@@ -31,6 +31,7 @@ module Akane
       serial = Gameboy::Serial.new(interrupts, debug_mode: options[:debug])
       joypad = Gameboy::Joypad.new(interrupts)
 
+      @dma = Gameboy::DMA.new(trace_dma: options[:trace]&.include?('dma'))
       bus = Gameboy::Bus.new(
         cartridge: cartridge,
         ppu: @ppu,
@@ -40,7 +41,8 @@ module Akane
         apu: @apu,
         timer: @timer,
         serial: serial,
-        joypad: joypad
+        joypad: joypad,
+        dma: @dma
       )
 
       cpu = Gameboy::Cpu.new(
@@ -68,6 +70,7 @@ module Akane
       @timer.tick
       @ppu.tick
       @apu.tick
+      @dma.tick
 
       @cycles += 1
     end
