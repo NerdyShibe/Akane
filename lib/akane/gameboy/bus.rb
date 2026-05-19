@@ -41,6 +41,8 @@ module Akane
       # Delegates the read to the proper component based on the address
       # and returns the 8-bit value that was stored there.
       def read_byte(address:)
+        return 0xFF if @dma.active?
+
         if address <= 0x7FFF
           @cartridge.read_rom(address)
         elsif address <= 0x9FFF
@@ -69,6 +71,8 @@ module Akane
       # Delegates the write to the proper component based on the address
       # and stores a 8-bit value at that location.
       def write_byte(address:, value:)
+        return if @dma.active?
+
         if address <= 0x7FFF
           @cartridge.write_rom(address, value)
         elsif address <= 0x9FFF
