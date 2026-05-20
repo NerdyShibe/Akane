@@ -1,5 +1,5 @@
 module Akane
-  module Gameboy
+  module GameBoy
     class Timer
       T_CYCLES: Integer
       COUNTER_BITS_TO_WATCH: Array[Integer]

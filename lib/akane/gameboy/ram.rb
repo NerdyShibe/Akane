@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Akane
-  module Gameboy
+  module GameBoy
     # Models the RAM chip within the Game Boy.
     class Ram
       # Memory size in bytes.

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Akane
-  module Gameboy
+  module GameBoy
     # Models the built-in clock timer inside the Game Boy.
     class Timer
       # Each tick advances 4 T-cycles / 1 M-cycle

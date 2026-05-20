@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Akane::Gameboy::Bus do
+describe Akane::GameBoy::Bus do
   subject(:bus) do
     described_class.new(
       cartridge: cartridge,
@@ -22,14 +22,14 @@ describe Akane::Gameboy::Bus do
     data
   end
   let(:cartridge) { Akane::Cartridge.new(rom: Akane::Cartridge::Rom.new(rom_data)) }
-  let(:ppu) { Akane::Gameboy::Ppu.new(interrupts) }
-  let(:apu) { Akane::Gameboy::Apu.new }
-  let(:wram) { Akane::Gameboy::Ram.new(size: 8192, offset: 0x8000) }
-  let(:hram) { Akane::Gameboy::Ram.new(size: 127, offset: 0xFF80) }
-  let(:interrupts) { Akane::Gameboy::Interrupts.new(skip_boot_rom: false) }
-  let(:timer) { Akane::Gameboy::Timer.new(interrupts) }
-  let(:serial) { Akane::Gameboy::Serial.new(interrupts) }
-  let(:joypad) { Akane::Gameboy::Joypad.new(interrupts) }
+  let(:ppu) { Akane::GameBoy::Ppu.new(interrupts) }
+  let(:apu) { Akane::GameBoy::Apu.new }
+  let(:wram) { Akane::GameBoy::Ram.new(size: 8192, offset: 0x8000) }
+  let(:hram) { Akane::GameBoy::Ram.new(size: 127, offset: 0xFF80) }
+  let(:interrupts) { Akane::GameBoy::Interrupts.new(skip_boot_rom: false) }
+  let(:timer) { Akane::GameBoy::Timer.new(interrupts) }
+  let(:serial) { Akane::GameBoy::Serial.new(interrupts) }
+  let(:joypad) { Akane::GameBoy::Joypad.new(interrupts) }
 
   describe '#read_byte' do
     context 'when in the 0x0000 - 0x7FFF (Cartridge ROM) range' do

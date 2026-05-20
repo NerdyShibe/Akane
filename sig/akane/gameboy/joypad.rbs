@@ -1,5 +1,5 @@
 module Akane
-  module Gameboy
+  module GameBoy
     class Joypad
       FACE_BUTTONS: Hash[Symbol, Integer]
       DPAD_BUTTONS: Hash[Symbol, Integer]

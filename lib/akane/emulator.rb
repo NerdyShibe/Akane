@@ -64,22 +64,22 @@ module Akane
     end
 
     def add_memory
-      @wram = Gameboy::Ram.new(size: 8192, offset: 0xC000)
-      @hram = Gameboy::Ram.new(size: 127, offset: 0xFF80)
-      @vram = Gameboy::Ram.new(size: 8192, offset: 0x8000)
-      @oam  = Gameboy::Ram.new(size: 160, offset: 0xFE00)
+      @wram = GameBoy::Ram.new(size: 8192, offset: 0xC000)
+      @hram = GameBoy::Ram.new(size: 127, offset: 0xFF80)
+      @vram = GameBoy::Ram.new(size: 8192, offset: 0x8000)
+      @oam  = GameBoy::Ram.new(size: 160, offset: 0xFE00)
     end
 
     def add_components
-      @bus = Gameboy::Bus.new
+      @bus = GameBoy::Bus.new
       @lcd = HAL::SDL2.new unless @video == 'null'
-      @apu = Gameboy::Apu.new
-      @dma = Gameboy::DMA.new(@bus, trace_dma: @trace_dma)
-      @interrupts = Gameboy::Interrupts.new
-      @ppu = Gameboy::Ppu.new(@vram, @oam, @lcd, @interrupts, trace_ppu: @trace_ppu)
-      @timer = Gameboy::Timer.new(@interrupts)
-      @serial = Gameboy::Serial.new(@interrupts, trace_serial: @trace_serial)
-      @joypad = Gameboy::Joypad.new(@interrupts)
+      @apu = GameBoy::Apu.new
+      @dma = GameBoy::DMA.new(@bus, trace_dma: @trace_dma)
+      @interrupts = GameBoy::Interrupts.new
+      @ppu = GameBoy::Ppu.new(@vram, @oam, @lcd, @interrupts, trace_ppu: @trace_ppu)
+      @timer = GameBoy::Timer.new(@interrupts)
+      @serial = GameBoy::Serial.new(@interrupts, trace_serial: @trace_serial)
+      @joypad = GameBoy::Joypad.new(@interrupts)
       @bus.wire_components(
         cartridge: @cartridge,
         ppu: @ppu,
@@ -92,7 +92,7 @@ module Akane
         joypad: @joypad,
         dma: @dma
       )
-      @cpu = Gameboy::Cpu.new(
+      @cpu = GameBoy::Cpu.new(
         @bus,
         @hram,
         @interrupts,

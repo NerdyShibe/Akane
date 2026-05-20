@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-describe Akane::Gameboy::Joypad do
+describe Akane::GameBoy::Joypad do
   subject(:joypad) { described_class.new(interrupts) }
 
-  let(:interrupts) { Akane::Gameboy::Interrupts.new(skip_boot_rom: false) }
+  let(:interrupts) { Akane::GameBoy::Interrupts.new(skip_boot_rom: false) }
 
   let(:two_upper_bits) { (joypad.p1 >> 6) & 0b11 }
   let(:selection_bits) { (joypad.p1 >> 4) & 0b11 }

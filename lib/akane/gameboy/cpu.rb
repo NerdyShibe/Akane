@@ -3,7 +3,7 @@
 require 'debug'
 
 module Akane
-  module Gameboy
+  module GameBoy
     # Models the CPU behavior from the Game Boy.
     class Cpu
       attr_reader :registers, :m_cycles
@@ -220,7 +220,7 @@ module Akane
       # Custom inspect method to facilitate debugging, prevents circular references
       # since all instructions hold the Cpu object and the Cpu holds instruction objects.
       def inspect
-        '#<Akane::Gameboy::Cpu ' \
+        '#<Akane::GameBoy::Cpu ' \
           "@pc=$#{@registers.pc} " \
           "@instructions_size=#{@instructions.compact.size} " \
           "@cb_instructions_size=#{@cb_instructions.compact.size}"

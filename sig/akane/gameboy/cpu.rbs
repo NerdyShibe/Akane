@@ -1,5 +1,5 @@
 module Akane
-  module Gameboy
+  module GameBoy
     class Cpu
       INSTRUCTIONS: Hash[Integer, Proc]
       CB_INSTRUCTIONS: Hash[Integer, Proc]

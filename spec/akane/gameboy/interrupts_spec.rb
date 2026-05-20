@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Akane::Gameboy::Interrupts do
+describe Akane::GameBoy::Interrupts do
   subject(:interrupts) { described_class.new(skip_boot_rom: true) }
 
   describe '#if_register' do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Akane
-  module Gameboy
+  module GameBoy
     class Cpu
       module Instructions
         # Handles the logic for the HALT instruction.

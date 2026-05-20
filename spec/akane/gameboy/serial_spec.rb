@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-describe Akane::Gameboy::Serial do
+describe Akane::GameBoy::Serial do
   subject(:serial) { described_class.new(interrupts) }
 
-  let(:interrupts) { Akane::Gameboy::Interrupts.new(skip_boot_rom: false) }
+  let(:interrupts) { Akane::GameBoy::Interrupts.new(skip_boot_rom: false) }
 
   describe '#initialize' do
     it 'correctly sets the initial registers values', :aggregate_failures do

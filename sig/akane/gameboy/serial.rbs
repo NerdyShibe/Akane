@@ -1,5 +1,5 @@
 module Akane
-  module Gameboy
+  module GameBoy
     class Serial
       attr_reader sb: Integer
       attr_reader message_buffer: Array[Integer]

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Akane
-  module Gameboy
+  module GameBoy
     class Cpu
       module Instructions
         # Holds the logic of all the POP instructions.

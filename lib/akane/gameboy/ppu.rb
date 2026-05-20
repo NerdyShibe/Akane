@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Akane
-  module Gameboy
+  module GameBoy
     # This class models the Pixel Processing Unit from the Original Game Boy.
     #
     # The PPU outputs a 160x144 pixel framebuffer each frame.

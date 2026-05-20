@@ -2,7 +2,7 @@
 
 # rubocop:disable Metrics/MethodLength, Metrics/ModuleLength
 module Akane
-  module Gameboy
+  module GameBoy
     class Cpu
       # Responsible to group all instruction types and load the CPU instructions array.
       module Instructions

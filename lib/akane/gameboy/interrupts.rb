@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Akane
-  module Gameboy
+  module GameBoy
     # Models the Interrupts Controller inside the Game Boy
     class Interrupts
       # Interrupt types sorted by highest to lowest priority.

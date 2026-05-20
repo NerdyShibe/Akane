@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Akane
-  module Gameboy
+  module GameBoy
     # | 0x0000-0x7FFF | 32 KB | Cartridge ROM | Bank 0 fixed, Bank N switchable |
     # | 0x8000-0x9FFF | 8 KB | Video RAM (VRAM) | Tile data + tile maps |
     # | 0xA000-0xBFFF | 8 KB | External RAM | Cartridge RAM, battery-backed |

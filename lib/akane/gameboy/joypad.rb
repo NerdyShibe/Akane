@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Akane
-  module Gameboy
+  module GameBoy
     # Models the joypad inputs and logic.
     class Joypad
       # Maps all face buttons to its relevant bit.

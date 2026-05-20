@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Akane
-  module Gameboy
+  module GameBoy
     # Models the RAM chip within the Game Boy.
     #
     # On the real Game Boy, the CPU and DMA share the same physical bus.

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Akane
-  module Gameboy
+  module GameBoy
     # Models the Serial Port present in the Game Boy.
     #
     # - Very useful for performing community accuracy tests, they use the serial to output results.

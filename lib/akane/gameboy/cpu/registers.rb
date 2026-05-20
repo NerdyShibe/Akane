@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Akane
-  module Gameboy
+  module GameBoy
     class Cpu
       # Models the behavior of the SM83 CPU registers.
       #

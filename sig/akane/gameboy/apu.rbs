@@ -1,5 +1,5 @@
 module Akane
-  module Gameboy
+  module GameBoy
     class Apu
       def tick: () -> void
     end

@@ -1,5 +1,5 @@
 module Akane
-  module Gameboy
+  module GameBoy
     class Bus
       def initialize: (
         cartridge: Akane::Cartridge,

@@ -1,5 +1,5 @@
 module Akane
-  module Gameboy
+  module GameBoy
     class Ram
       def initialize: (size: Integer, offset: Integer) -> void
 

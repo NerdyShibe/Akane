@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Akane
-  module Gameboy
+  module GameBoy
     class Cpu
       module Instructions
         # Defines the mnemonic, bytes and logic for the NOP instruction.
